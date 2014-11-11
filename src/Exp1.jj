@@ -1,0 +1,328 @@
+package javaccproject;
+
+PARSER_BEGIN(Exp1)
+
+public class Exp1 {
+    public static void main(String[] args) {
+        try {
+            if(args.length == 0 || args[0].length() == 0) {
+                //stdin, not implemented
+                System.err.println("Reading from stdin not implemented");
+                return;
+            }
+            else {
+            	if(args[0].split(" ").length == 1) {
+            	    //file
+            	    new Exp1(new java.io.FileInputStream(args[0])).__Start();
+            	} else {
+            	    //redirected input
+            	    new Exp1(new java.io.StringReader(args[0])).__Start();
+            	}
+            }
+            System.out.println("Syntax is okay");
+        } catch (ParseException e) {
+            // Catching Throwable is ugly but JavaCC throws Error objects!
+            System.err.println("Syntax check failed: " + e.getMessage());
+        }
+        catch (java.io.FileNotFoundException e)
+        {
+            System.err.printf("File not found: %s\n", args[0]);
+        }
+    }
+}
+
+PARSER_END(Exp1)
+
+//The following is copied from the Java .jj file
+/* WHITE SPACE */
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")?>
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+TOKEN : 
+{
+/*allowed keywords*/
+<BREAK: "break"> 
+| <CLASS: "class">
+| <CONTINUE: "continue">
+| <ELSE: "else">
+| <EXTENDS: "extends">
+| <IF: "if"> 
+| <NEW: "new">
+| <PRIVATE: "private">
+| <PROTECTED: "protected">
+| <PUBLIC: "public">
+| <RETURN: "return">
+| <STATIC: "static">
+| <SUPER: "super">
+| <THIS: "this">
+| <WHILE: "while">
+
+/*primitive allowed types*/
+| <BOOLEAN: "boolean">
+| <CHAR: "char">
+| <INT: "int">
+| <VOID: "void">
+
+/*forbidden words*/
+| <ABSTRACT: "abstract">
+| <_BYTE: "byte">
+| <CASE: "case">
+| <CATCH: "catch">
+| <CONST: "const">
+| <DEFAULT_: "default">
+| <DO: "do">
+| <_DOUBLE: "double">
+| <FINAL: "final">
+| <FINALLY: "finally">
+| <FOR: "for">
+| <IMPLEMENTS: "implements">
+| <IMPORT: "import">
+| <INSTANCEOF: "instanceof">
+| <INTERFACE: "interface">
+| <_LONG: "long">
+| <NATIVE: "native">
+| <GOTO: "goto">
+| <PACKAGE: "package">
+| <_SHORT: "short">
+| <SWITCH: "switch">
+| <SYNCHRONIZED: "synchronized">
+| <THROW: "throw">
+| <THROWS: "throws">
+| <TRANSIENT: "transient">
+| <TRY: "try">
+| <VOLATILE: "volatile">
+| <BYVALUE: "byvalue">
+| <CAST: "cast">
+| <FUTURE: "future">
+| <GENERIC: "generic">
+| <INNER: "inner">
+| <NONE: "none">
+| <OPERATOR: "operator">
+| <OUTER: "outer">
+| <REST: "rest">
+| <VAR: "var">
+
+/*other literals*/
+| <NULL_LITERAL: "null">
+
+/*forbidden primitive types*/
+| <FLOAT: "float">
+
+/*identifiers*/
+| <#Let: (["a"-"z","A"-"Z"])>
+| <#Dig: ["0"-"9"]>
+| <#Dollar_Sign: "$">
+| <#Underscore: "_">
+| <ID: (<Let>|<Dollar_Sign>|<Underscore>)(<Let>|<Dig>|<Dollar_Sign>|<Underscore>)*>
+
+/*number literals*/
+| <INT_LITERAL: (["0"-"9"])+> 
+| <#EXPONENT :   "E"("+"|"-")?(["0"-"9"])*>
+| <FLOAT_LITERAL :  ((["0"-"9"])+"."(["0"-"9"])*(<EXPONENT>)? | 
+            (["0"-"9"])*"."(["0"-"9"])+(<EXPONENT>)? |
+            (["0"-"9"])+(<EXPONENT>)?)>
+
+/*other literals*/
+| <CHAR_LITERAL: "'" (("\\" ("\\" | "n" | "t" | "\""))|(~["\\","\n","'"])) "'">
+| <STRING_LITERAL: "\"" (("\\" ("\\" | "n" | "t" | "\""))|(~["\\","\n" ,"\""])|" ")* "\"">
+| <BOOLEAN_LITERAL: "true" | "false">
+
+/*decaf punctuation*/
+| <LP: "(">
+| <RP: ")"> 
+| <L_CURL_BRACKET: "{">
+| <R_CURL_BRACKET: "}">
+| <L_STRAIGHT_BRACKET: "[">
+| <R_STRAIGHT_BRACKET: "]">
+| <SEMICOLON: ";">
+| <COMMA: ",">
+| <PERIOD: ".">
+
+/*operators*/
+| <EQ: "=">
+| <GT: ">">
+| <LT: "<">
+| <NOT: "!">
+| <EQEQ: "==">
+| <GTE: ">=">
+| <LTE: "<=">
+| <NEQ: "!=">
+| <ANDAND: "&&"> 
+| <SLASH: "/">
+| <BACKSLASH: "\\">
+| <DBL_HOR_BAR: "||">
+| <MOD: "%">
+| <PLUS: "+"> 
+| <MINUS: "-">
+| <STAR: "*"> 
+
+/*unsupported operators*/
+| <TILDE: "~">
+| <QUESTION: "?">
+| <COLON: ":">
+| <PLUSPLUS: "++">
+| <MINUSMINUS: "--">
+| <AND: "&">
+| <HOR_BAR: "|">
+| <CARROT: "^">
+| <LTLT: "<<">
+| <GTGT: ">>">
+| <GTGTGT: ">>>">
+| <PLUS_EQ: "+=">
+| <MINUS_EQ: "-=">
+| <STAR_EQ: "*=">
+| <SLASH_EQ: "/=">
+| <AND_EQ: "&=">
+| <BAR_EQ: "|=">
+| <CARROT_EQ: "^=">
+| <MOD_EQ: "%=">
+| <LTLTEQ: "<<=">
+| <GTGTEQ: ">>=">
+| <GTGTGTEQ: ">>>=">
+}
+
+/* _p denotes the ' character from the grammar
+ * all methods start with two underscores to denote that they are methods
+ * as opposed to keywords defined above.
+ */
+
+void __Start():   {} { (__Class())+ <EOF> }
+void __Class(): {} { <CLASS> <ID> (__Super())? <L_CURL_BRACKET> (__Member())* <R_CURL_BRACKET>}
+void __Super(): {} { <EXTENDS> <ID> }
+void __Member(): {} { (__Modifier())* __Member_p() }
+void __Modifier(): {} { <STATIC> | 
+                        <PUBLIC> | 
+                        <PRIVATE> | 
+                        <PROTECTED> }
+void __Member_p(): {} { <ID> __MemberId() | 
+                        __PrimitiveType() __Type_p() __Member_p_p()}
+void __MemberId(): {} { __FormalArgs() __Block() | 
+                        __Type_p() __Member_p_p()}
+void __FormalArgs(): {} { <LP> (__FormalArgList())* <RP> }
+void __FormalArgList(): {} { __FormalArg() (<COMMA> __FormalArg())* }
+void __FormalArg(): {} { __Type() __VarDeclaratorId() | <ID> __Type_p() __VarDeclaratorId()}
+void __Type(): {} { __PrimitiveType() __Type_p() }
+void __Type_p(): {} { (<L_STRAIGHT_BRACKET><R_STRAIGHT_BRACKET>)* }
+void __PrimitiveType(): {} {    <BOOLEAN> |
+                                <CHAR> |
+                                <INT> |
+                                <VOID> }
+void __VarDeclaratorId(): {} { <ID> __Type_p() }
+void __Block(): {} { <L_CURL_BRACKET> (__Statement())* <R_CURL_BRACKET> }
+void __Statement(): {} {    <SEMICOLON> |
+                            LOOKAHEAD(3) __Expression() <SEMICOLON> |
+                            __Type() __VarDeclaratorList() <SEMICOLON> |
+                            LOOKAHEAD(2) <ID> __Type_p() __VarDeclaratorList() <SEMICOLON> |
+                            <IF> <LP> __Expression() <RP> __Statement() [ LOOKAHEAD(1) <ELSE> __Statement() ] | 
+                            <WHILE> <LP> __Expression() <RP> __Statement() |
+                            <RETURN> (__Expression())? <SEMICOLON> |
+                            <CONTINUE> <SEMICOLON> |
+                            <BREAK> <SEMICOLON> |
+                            __Block()}
+void __VarDeclaratorList(): {} { __VarDeclarator() (<COMMA> __VarDeclarator())* }
+void __VarDeclaratorListPreId(): {} { __VarDeclaratorPreId() (<COMMA> __VarDeclarator())* }
+void __VarDeclarator(): {} { __VarDeclaratorId() (<EQ> __Expression())? }
+void __VarDeclaratorPreId(): {} { __Type_p() (<EQ> __Expression())? }
+void __Expression(): {} { __Expression_p() [ LOOKAHEAD(1) __ExpressionA_p() ]}
+void __Expression_p(): {} { __Expression_p_p() [ LOOKAHEAD(1) __ExpressionA_p_p() ] }
+void __Expression_p_p(): {} { __Expression_p_p_p() [ LOOKAHEAD(1) __ExpressionA_p_p_p() ]}
+void __Expression_p_p_p(): {} { __Expression_p_p_p_p() [ LOOKAHEAD(1) __ExpressionA_p_p_p_p() ] }
+void __Expression_p_p_p_p(): {} { __Expression_p_p_p_p_p() [ LOOKAHEAD(1) __ExpressionA_p_p_p_p_p() ] }
+void __Expression_p_p_p_p_p(): {} { __Expression_p_p_p_p_p_p() [ LOOKAHEAD(1) __ExpressionA_p_p_p_p_p_p() ] }
+void __Expression_p_p_p_p_p_p(): {} { __Expression_p_p_p_p_p_p_p() [ LOOKAHEAD(1) __ExpressionA_p_p_p_p_p_p_p() ] }
+void __Expression_p_p_p_p_p_p_p(): {} { __Primary() |
+                                        __UnaryOp() __Expression() }
+
+void __ExpressionA_p(): {} { __BinaryOpSeven() __Expression() }
+void __ExpressionA_p_p(): {} { __BinaryOpSix() __Expression() }
+void __ExpressionA_p_p_p(): {} { __BinaryOpFive() __Expression() }
+void __ExpressionA_p_p_p_p(): {} { __BinaryOpFour() __Expression() }
+void __ExpressionA_p_p_p_p_p(): {} { __BinaryOpThree() __Expression() }
+void __ExpressionA_p_p_p_p_p_p(): {} { __BinaryOpTwo() __Expression() }
+void __ExpressionA_p_p_p_p_p_p_p(): {} { __BinaryOpOne() __Expression() }
+
+void __BinaryOpSeven(): {} { <EQ> }
+void __BinaryOpSix(): {} {  <DBL_HOR_BAR> }
+void __BinaryOpFive(): {} { <ANDAND> }
+void __BinaryOpFour(): {} { <NEQ> |
+                            <EQEQ>}
+void __BinaryOpThree(): {} {    <GT> |
+                                <LT> |
+                                <LTE> |
+                                <GTE>}
+void __BinaryOpTwo(): {} {  <PLUS> | 
+                            <MINUS>}
+void __BinaryOpOne(): {} {  <STAR> |
+                            <SLASH> |
+                            <MOD> }
+void __UnaryOp(): {} {  <PLUS> |
+                        <MINUS> |
+                        <NOT> }
+void __Primary(): {} { __PrimaryReal() (<PERIOD> __PrimaryReal())* }
+void __PrimaryReal(): {} {  __NonNewArrayExpr() |
+                        <ID> __PrimaryId() | 
+                        <NEW> __PrimaryNew() |
+                        <SUPER>}
+void __NonNewArrayExpr(): {} {  __Literal() __DimPlus_p() |
+                                <THIS> __DimPlus_p() |
+                                <LP> __Expression() <RP> __DimPlus_p()}
+void __Literal(): {} {  <NULL_LITERAL> |
+                        <BOOLEAN_LITERAL> | 
+                        <INT_LITERAL> |
+                        <CHAR_LITERAL> |
+                        <STRING_LITERAL>}
+void __DimPlus_p(): {} { (__Dimension())* }
+void __Dimension(): {} { <L_STRAIGHT_BRACKET> __Expression() <R_STRAIGHT_BRACKET> }
+void __PrimaryId(): {} { (__ActualArgs())? __DimPlus_p() }
+void __ActualArgs(): {} { <LP> (__ExprList())? <RP> }
+void __ExprList(): {} { __Expression() (<COMMA> __Expression())* }
+void __PrimaryNew(): {} {   <ID> __ActualDim() |
+                            __PrimitiveType() __DimPlus()}
+void __ActualDim(): {} {    __DimPlus() |
+                            __ActualArgs() }
+void __DimPlus(): {} { __Dimension() __DimPlus_p()}
+
+void __Member_p_p(): {} { <ID> __Member_p_pPreId() }
+void __Member_p_pPreId() : {} { __Field() |
+                                __MethodCtorCombo() }
+void __Field(): {} { __VarDeclaratorListPreId() <SEMICOLON> }
+void __MethodCtorCombo(): {} { __FormalArgs() __Block()}
