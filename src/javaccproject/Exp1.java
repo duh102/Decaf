@@ -95,16 +95,36 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
             jj_consume_token(L_CURL_BRACKET);
             label_2: while (true) {
+                Token.AccessModifier thisMemberAccessModifier = Token.AccessModifier.Default;
+                boolean isStatic = false;
+                Token.ReturnType returnOrDataType;
+                
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
                 {
                     case PRIVATE:
+                        thisMemberAccessModifier = Token.AccessModifier.Private;
+                        break;
                     case PROTECTED:
+                        thisMemberAccessModifier = Token.AccessModifier.Protected;
+                        break;
                     case PUBLIC:
+                        thisMemberAccessModifier = Token.AccessModifier.Public;
+                        break;
                     case STATIC:
+                        isStatic = true;
+                        break;
                     case BOOLEAN:
+                        returnOrDataType = Token.ReturnType.Boolean;
+                        break;
                     case CHAR:
+                        returnOrDataType = Token.ReturnType.Character;
+                        break;
                     case INT:
+                        returnOrDataType = Token.ReturnType.Integer;
+                        break;
                     case VOID:
+                        returnOrDataType = Token.ReturnType.Void;
+                        break;
                     case ID: {
                         ;
                         break;
@@ -155,8 +175,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         try {
             jj_consume_token(EXTENDS);
             Token superClass = jj_consume_token(ID);
-            symbolTable.getSymbolTable(thisClass).setToken(superClass,
-                    SymbolTokenType.CLASS);
+            ((ClassToken)thisClass).setSuperclass(superClass);
         } finally {
             if (jjtc000) {
                 jjtree.closeNodeScope(jjtn000, true);
