@@ -11,8 +11,5 @@ package javaccproject;
  * @author Lenovo
  */
 public enum SymbolTokenType {
-        CLASS,
-        MEMBER,
-        LITERAL,
-        EXPRESSION    
+    CLASS, MEMBER, LITERAL, EXPRESSION
 }

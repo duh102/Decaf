@@ -15,7 +15,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SymbolTable symbolTable = new SymbolTable();
         try {
             new Exp1(new StringReader(toParse)).__Start(symbolTable);
-            //debug: System.out.println("Syntax is okay");
+            // debug: System.out.println("Syntax is okay");
             return symbolTable;
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
@@ -29,7 +29,14 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
      * underscores to denote that they are methods as opposed to keywords
      * defined above.
      */
-    final public void __Start(SymbolTable symbolTable) throws ParseException {/* @bgen(jjtree) __Start */
+    final public void __Start(SymbolTable symbolTable) throws ParseException {/*
+                                                                               * @
+                                                                               * bgen
+                                                                               * (
+                                                                               * jjtree
+                                                                               * )
+                                                                               * __Start
+                                                                               */
         SimpleNode jjtn000 = new SimpleNode(JJT__START);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -75,18 +82,27 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    final public void __Class(SymbolTable symbolTable) throws ParseException {/* @bgen(jjtree) __Class */
+    final public void __Class(SymbolTable symbolTable) throws ParseException {/*
+                                                                               * @
+                                                                               * bgen
+                                                                               * (
+                                                                               * jjtree
+                                                                               * )
+                                                                               * __Class
+                                                                               */
         SimpleNode jjtn000 = new SimpleNode(JJT__CLASS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             jj_consume_token(CLASS);
-            Token thisClass = jj_consume_token(ID);
-            symbolTable.setToken(thisClass, SymbolTokenType.CLASS);
+            Token thisClass = new ClassToken(jj_consume_token(ID));
+            symbolTable.setToken(thisClass);
+            thisClass.containedIn = symbolTable;
+            thisClass.myContext = new SymbolTable();
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EXTENDS: {
-                    __Super(thisClass, symbolTable);
+                    __Super((ClassToken)thisClass, symbolTable);
                     break;
                 }
                 default:
@@ -95,36 +111,17 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
             jj_consume_token(L_CURL_BRACKET);
             label_2: while (true) {
-                Token.AccessModifier thisMemberAccessModifier = Token.AccessModifier.Default;
-                boolean isStatic = false;
-                Token.ReturnType returnOrDataType;
-                
+
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
                 {
                     case PRIVATE:
-                        thisMemberAccessModifier = Token.AccessModifier.Private;
-                        break;
                     case PROTECTED:
-                        thisMemberAccessModifier = Token.AccessModifier.Protected;
-                        break;
                     case PUBLIC:
-                        thisMemberAccessModifier = Token.AccessModifier.Public;
-                        break;
                     case STATIC:
-                        isStatic = true;
-                        break;
                     case BOOLEAN:
-                        returnOrDataType = Token.ReturnType.Boolean;
-                        break;
                     case CHAR:
-                        returnOrDataType = Token.ReturnType.Character;
-                        break;
                     case INT:
-                        returnOrDataType = Token.ReturnType.Integer;
-                        break;
                     case VOID:
-                        returnOrDataType = Token.ReturnType.Void;
-                        break;
                     case ID: {
                         ;
                         break;
@@ -133,7 +130,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                         jj_la1[2] = jj_gen;
                         break label_2;
                 }
-                __Member(symbolTable);
+                __Member(thisClass.myContext);
             }
             jj_consume_token(R_CURL_BRACKET);
         } catch (Throwable jjte000) {
@@ -163,19 +160,17 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    final public void __Super(Token thisClass, SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __Super
-                                                                       */
+    final public void __Super(ClassToken thisClass, SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __Super
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__SUPER);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             jj_consume_token(EXTENDS);
             Token superClass = jj_consume_token(ID);
-            ((ClassToken)thisClass).setSuperclass(superClass);
+            thisClass.superclass = superClass.image;
         } finally {
             if (jjtc000) {
                 jjtree.closeNodeScope(jjtn000, true);
@@ -183,10 +178,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member(SymbolTable symbolTable) throws ParseException {/*
-                                                                * @bgen(jjtree)
-                                                                * __Member
-                                                                */
+    static final public void __Member(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Member
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -235,10 +230,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Modifier(SymbolTable symbolTable) throws ParseException {/*
-                                                                  * @bgen(jjtree)
-                                                                  * __Modifier
-                                                                  */
+    static final public void __Modifier(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Modifier
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__MODIFIER);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -273,10 +268,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                  * @bgen(jjtree)
-                                                                  * __Member_p
-                                                                  */
+    static final public void __Member_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Member_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -329,10 +324,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __MemberId(SymbolTable symbolTable) throws ParseException {/*
-                                                                  * @bgen(jjtree)
-                                                                  * __MemberId
-                                                                  */
+    static final public void __MemberId(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __MemberId
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__MEMBERID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -382,11 +377,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __FormalArgs(SymbolTable symbolTable) throws ParseException {/*
-                                                                    * @bgen(jjtree
-                                                                    * )
-                                                                    * __FormalArgs
-                                                                    */
+    static final public void __FormalArgs(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __FormalArgs
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__FORMALARGS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -437,12 +431,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __FormalArgList(SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __FormalArgList
-                                                                       */
+    static final public void __FormalArgList(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __FormalArgList
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__FORMALARGLIST);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -489,11 +481,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __FormalArg(SymbolTable symbolTable) throws ParseException {/*
-                                                                   * @bgen(jjtree
-                                                                   * )
-                                                                   * __FormalArg
-                                                                   */
+    static final public void __FormalArg(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __FormalArg
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__FORMALARG);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -546,10 +537,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Type(SymbolTable symbolTable) throws ParseException {/*
-                                                              * @bgen(jjtree)
-                                                              * __Type
-                                                              */
+    static final public void __Type(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Type
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__TYPE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -583,10 +574,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Type_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                * @bgen(jjtree)
-                                                                * __Type_p
-                                                                */
+    static final public void __Type_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Type_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__TYPE_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -612,12 +603,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimitiveType(SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __PrimitiveType
-                                                                       */
+    static final public void __PrimitiveType(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __PrimitiveType
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__PRIMITIVETYPE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -652,12 +641,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __VarDeclaratorId(SymbolTable symbolTable) throws ParseException {/*
-                                                                         * @bgen(
-                                                                         * jjtree
-                                                                         * )
-                                                                         * __VarDeclaratorId
-                                                                         */
+    static final public void __VarDeclaratorId(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __VarDeclaratorId
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -691,10 +678,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Block(SymbolTable symbolTable) throws ParseException {/*
-                                                               * @bgen(jjtree)
-                                                               * __Block
-                                                               */
+    static final public void __Block(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Block
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BLOCK);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -764,11 +751,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Statement(SymbolTable symbolTable) throws ParseException {/*
-                                                                   * @bgen(jjtree
-                                                                   * )
-                                                                   * __Statement
-                                                                   */
+    static final public void __Statement(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __Statement
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__STATEMENT);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -913,13 +899,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __VarDeclaratorList(SymbolTable symbolTable) throws ParseException {/*
-                                                                           * @bgen
-                                                                           * (
-                                                                           * jjtree
-                                                                           * )
-                                                                           * __VarDeclaratorList
-                                                                           */
+    static final public void __VarDeclaratorList(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen ( jjtree ) __VarDeclaratorList
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORLIST);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -966,14 +949,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __VarDeclaratorListPreId(SymbolTable symbolTable) throws ParseException {/*
-                                                                                * @
-                                                                                * bgen
-                                                                                * (
-                                                                                * jjtree
-                                                                                * )
-                                                                                * __VarDeclaratorListPreId
-                                                                                */
+    static final public void __VarDeclaratorListPreId(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @ bgen ( jjtree ) __VarDeclaratorListPreId
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORLISTPREID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1020,12 +999,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __VarDeclarator(SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __VarDeclarator
-                                                                       */
+    static final public void __VarDeclarator(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __VarDeclarator
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATOR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1069,13 +1046,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __VarDeclaratorPreId(SymbolTable symbolTable) throws ParseException {/*
-                                                                            * @bgen
-                                                                            * (
-                                                                            * jjtree
-                                                                            * )
-                                                                            * __VarDeclaratorPreId
-                                                                            */
+    static final public void __VarDeclaratorPreId(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen ( jjtree ) __VarDeclaratorPreId
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORPREID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1119,11 +1093,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression(SymbolTable symbolTable) throws ParseException {/*
-                                                                    * @bgen(jjtree
-                                                                    * )
-                                                                    * __Expression
-                                                                    */
+    static final public void __Expression(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __Expression
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1166,11 +1139,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                      * @bgen(jjtree
-                                                                      * )
-                                                                      * __Expression_p
-                                                                      */
+    static final public void __Expression_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __Expression_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1213,12 +1185,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                        * @bgen(
-                                                                        * jjtree
-                                                                        * )
-                                                                        * __Expression_p_p
-                                                                        */
+    static final public void __Expression_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __Expression_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1261,13 +1231,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                          * @bgen
-                                                                          * (
-                                                                          * jjtree
-                                                                          * )
-                                                                          * __Expression_p_p_p
-                                                                          */
+    static final public void __Expression_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen ( jjtree ) __Expression_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1311,13 +1278,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                            * @bgen
-                                                                            * (
-                                                                            * jjtree
-                                                                            * )
-                                                                            * __Expression_p_p_p_p
-                                                                            */
+    static final public void __Expression_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen ( jjtree ) __Expression_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1363,14 +1327,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                              * @
-                                                                              * bgen
-                                                                              * (
-                                                                              * jjtree
-                                                                              * )
-                                                                              * __Expression_p_p_p_p_p
-                                                                              */
+    static final public void __Expression_p_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @ bgen ( jjtree ) __Expression_p_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1414,14 +1374,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p_p_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                                * @
-                                                                                * bgen
-                                                                                * (
-                                                                                * jjtree
-                                                                                * )
-                                                                                * __Expression_p_p_p_p_p_p
-                                                                                */
+    static final public void __Expression_p_p_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @ bgen ( jjtree ) __Expression_p_p_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1466,14 +1422,11 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Expression_p_p_p_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                                  * @
-                                                                                  * bgen
-                                                                                  * (
-                                                                                  * jjtree
-                                                                                  * )
-                                                                                  * __Expression_p_p_p_p_p_p_p
-                                                                                  */
+    static final public void __Expression_p_p_p_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @ bgen ( jjtree )
+                                    * __Expression_p_p_p_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1532,12 +1485,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExpressionA_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __ExpressionA_p
-                                                                       */
+    static final public void __ExpressionA_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __ExpressionA_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1571,12 +1522,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExpressionA_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                         * @bgen(
-                                                                         * jjtree
-                                                                         * )
-                                                                         * __ExpressionA_p_p
-                                                                         */
+    static final public void __ExpressionA_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __ExpressionA_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1610,13 +1559,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExpressionA_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                           * @bgen
-                                                                           * (
-                                                                           * jjtree
-                                                                           * )
-                                                                           * __ExpressionA_p_p_p
-                                                                           */
+    static final public void __ExpressionA_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen ( jjtree ) __ExpressionA_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1650,13 +1596,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExpressionA_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                             * @bgen
-                                                                             * (
-                                                                             * jjtree
-                                                                             * )
-                                                                             * __ExpressionA_p_p_p_p
-                                                                             */
+    static final public void __ExpressionA_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen ( jjtree ) __ExpressionA_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1690,14 +1633,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExpressionA_p_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                               * @
-                                                                               * bgen
-                                                                               * (
-                                                                               * jjtree
-                                                                               * )
-                                                                               * __ExpressionA_p_p_p_p_p
-                                                                               */
+    static final public void __ExpressionA_p_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @ bgen ( jjtree ) __ExpressionA_p_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1731,14 +1670,11 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExpressionA_p_p_p_p_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                                 * @
-                                                                                 * bgen
-                                                                                 * (
-                                                                                 * jjtree
-                                                                                 * )
-                                                                                 * __ExpressionA_p_p_p_p_p_p
-                                                                                 */
+    static final public void __ExpressionA_p_p_p_p_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @ bgen ( jjtree )
+                                    * __ExpressionA_p_p_p_p_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1807,12 +1743,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpSeven(SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __BinaryOpSeven
-                                                                       */
+    static final public void __BinaryOpSeven(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __BinaryOpSeven
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPSEVEN);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1825,11 +1759,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpSix(SymbolTable symbolTable) throws ParseException {/*
-                                                                     * @bgen(jjtree
-                                                                     * )
-                                                                     * __BinaryOpSix
-                                                                     */
+    static final public void __BinaryOpSix(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __BinaryOpSix
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPSIX);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1842,11 +1775,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpFive(SymbolTable symbolTable) throws ParseException {/*
-                                                                      * @bgen(jjtree
-                                                                      * )
-                                                                      * __BinaryOpFive
-                                                                      */
+    static final public void __BinaryOpFive(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __BinaryOpFive
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPFIVE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1859,11 +1791,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpFour(SymbolTable symbolTable) throws ParseException {/*
-                                                                      * @bgen(jjtree
-                                                                      * )
-                                                                      * __BinaryOpFour
-                                                                      */
+    static final public void __BinaryOpFour(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __BinaryOpFour
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPFOUR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1890,12 +1821,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpThree(SymbolTable symbolTable) throws ParseException {/*
-                                                                       * @bgen(
-                                                                       * jjtree
-                                                                       * )
-                                                                       * __BinaryOpThree
-                                                                       */
+    static final public void __BinaryOpThree(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __BinaryOpThree
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPTHREE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1930,11 +1859,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpTwo(SymbolTable symbolTable) throws ParseException {/*
-                                                                     * @bgen(jjtree
-                                                                     * )
-                                                                     * __BinaryOpTwo
-                                                                     */
+    static final public void __BinaryOpTwo(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __BinaryOpTwo
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPTWO);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1961,11 +1889,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __BinaryOpOne(SymbolTable symbolTable) throws ParseException {/*
-                                                                     * @bgen(jjtree
-                                                                     * )
-                                                                     * __BinaryOpOne
-                                                                     */
+    static final public void __BinaryOpOne(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __BinaryOpOne
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPONE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -1996,10 +1923,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __UnaryOp(SymbolTable symbolTable) throws ParseException {/*
-                                                                 * @bgen(jjtree)
-                                                                 * __UnaryOp
-                                                                 */
+    static final public void __UnaryOp(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __UnaryOp
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__UNARYOP);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2030,10 +1957,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Primary(SymbolTable symbolTable) throws ParseException {/*
-                                                                 * @bgen(jjtree)
-                                                                 * __Primary
-                                                                 */
+    static final public void __Primary(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Primary
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARY);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2080,11 +2007,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimaryReal(SymbolTable symbolTable) throws ParseException {/*
-                                                                     * @bgen(jjtree
-                                                                     * )
-                                                                     * __PrimaryReal
-                                                                     */
+    static final public void __PrimaryReal(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __PrimaryReal
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARYREAL);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2147,12 +2073,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __NonNewArrayExpr(SymbolTable symbolTable) throws ParseException {/*
-                                                                         * @bgen(
-                                                                         * jjtree
-                                                                         * )
-                                                                         * __NonNewArrayExpr
-                                                                         */
+    static final public void __NonNewArrayExpr(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __NonNewArrayExpr
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__NONNEWARRAYEXPR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2212,10 +2136,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Literal(SymbolTable symbolTable) throws ParseException {/*
-                                                                 * @bgen(jjtree)
-                                                                 * __Literal
-                                                                 */
+    static final public void __Literal(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Literal
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__LITERAL);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2254,11 +2178,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __DimPlus_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                   * @bgen(jjtree
-                                                                   * )
-                                                                   * __DimPlus_p
-                                                                   */
+    static final public void __DimPlus_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __DimPlus_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__DIMPLUS_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2303,11 +2226,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Dimension(SymbolTable symbolTable) throws ParseException {/*
-                                                                   * @bgen(jjtree
-                                                                   * )
-                                                                   * __Dimension
-                                                                   */
+    static final public void __Dimension(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __Dimension
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__DIMENSION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2342,11 +2264,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimaryId(SymbolTable symbolTable) throws ParseException {/*
-                                                                   * @bgen(jjtree
-                                                                   * )
-                                                                   * __PrimaryId
-                                                                   */
+    static final public void __PrimaryId(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __PrimaryId
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARYID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2389,11 +2310,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ActualArgs(SymbolTable symbolTable) throws ParseException {/*
-                                                                    * @bgen(jjtree
-                                                                    * )
-                                                                    * __ActualArgs
-                                                                    */
+    static final public void __ActualArgs(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __ActualArgs
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__ACTUALARGS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2449,10 +2369,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ExprList(SymbolTable symbolTable) throws ParseException {/*
-                                                                  * @bgen(jjtree)
-                                                                  * __ExprList
-                                                                  */
+    static final public void __ExprList(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __ExprList
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__EXPRLIST);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2499,11 +2419,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimaryNew(SymbolTable symbolTable) throws ParseException {/*
-                                                                    * @bgen(jjtree
-                                                                    * )
-                                                                    * __PrimaryNew
-                                                                    */
+    static final public void __PrimaryNew(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __PrimaryNew
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARYNEW);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2555,11 +2474,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ActualDim(SymbolTable symbolTable) throws ParseException {/*
-                                                                   * @bgen(jjtree
-                                                                   * )
-                                                                   * __ActualDim
-                                                                   */
+    static final public void __ActualDim(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __ActualDim
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__ACTUALDIM);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2606,10 +2524,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __DimPlus(SymbolTable symbolTable) throws ParseException {/*
-                                                                 * @bgen(jjtree)
-                                                                 * __DimPlus
-                                                                 */
+    static final public void __DimPlus(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __DimPlus
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__DIMPLUS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2643,11 +2561,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p_p(SymbolTable symbolTable) throws ParseException {/*
-                                                                    * @bgen(jjtree
-                                                                    * )
-                                                                    * __Member_p_p
-                                                                    */
+    static final public void __Member_p_p(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree ) __Member_p_p
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2681,12 +2598,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p_pPreId(SymbolTable symbolTable) throws ParseException {/*
-                                                                         * @bgen(
-                                                                         * jjtree
-                                                                         * )
-                                                                         * __Member_p_pPreId
-                                                                         */
+    static final public void __Member_p_pPreId(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __Member_p_pPreId
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER_P_PPREID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2736,10 +2651,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Field(SymbolTable symbolTable) throws ParseException {/*
-                                                               * @bgen(jjtree)
-                                                               * __Field
-                                                               */
+    static final public void __Field(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen(jjtree) __Field
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__FIELD);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
@@ -2773,12 +2688,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __MethodCtorCombo(SymbolTable symbolTable) throws ParseException {/*
-                                                                         * @bgen(
-                                                                         * jjtree
-                                                                         * )
-                                                                         * __MethodCtorCombo
-                                                                         */
+    static final public void __MethodCtorCombo(SymbolTable symbolTable)
+            throws ParseException {/*
+                                    * @bgen( jjtree ) __MethodCtorCombo
+                                    */
         SimpleNode jjtn000 = new SimpleNode(JJT__METHODCTORCOMBO);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);

@@ -5,34 +5,27 @@
  */
 
 package javaccproject;
+
 import java.util.HashMap;
 
 /**
  *
  * @author Lenovo
  */
-public class SymbolTable { 
-    SymbolTokenType type;       
-    HashMap<Token, SymbolTable> table = new HashMap<Token, SymbolTable>();
-        
-    SymbolTable(){
-        super();
-    }
-    SymbolTable(SymbolTokenType type){
-        this.type=type;
-    }
+public class SymbolTable
+{
+    public Token tableOf = null;
+    HashMap<String, Token> table = new HashMap<String, Token>();
 
-    void setToken(Token t, SymbolTokenType type) throws ParseException{
-        if(table.containsKey(t)){
+    void setToken(Token t) throws ParseException {
+        if (table.containsKey(t.image)) {
             throw new ParseException("Duplicate symbol");
-        }else{
-            table.put(t, new SymbolTable(type));
+        } else {
+            table.put(t.image, t);
         }
     }
-    public SymbolTokenType getTokenType(){
-        return type;
-    }
-    public SymbolTable getSymbolTable(Token t){
-        return table.get(t);        
+
+    public Token getToken(String t) {
+        return table.get(t);
     }
 }
