@@ -1,6 +1,6 @@
 package javaccproject;
 
-public abstract class MemberToken extends Token
+public class MemberToken extends Token
 {
     /**
      * I don't honestly know why they bothered to make Tokens serializable but

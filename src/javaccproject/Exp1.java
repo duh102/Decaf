@@ -186,6 +186,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
+            Token.AccessModifier memberModifier = Token.AccessModifier.Default;
+            Boolean isStatic = false;
             label_3: while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
                 {
@@ -200,9 +202,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                         jj_la1[3] = jj_gen;
                         break label_3;
                 }
-                __Modifier(symbolTable);
+                __Modifier(memberModifier, isStatic, symbolTable);
             }
-            __Member_p(symbolTable);
+            __Member_p(memberModifier, isStatic, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -230,7 +232,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Modifier(SymbolTable symbolTable)
+    static final public void __Modifier(Token.AccessModifier accessModifier, Boolean isStatic, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Modifier
                                     */
@@ -242,18 +244,26 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case STATIC: {
                     jj_consume_token(STATIC);
+                    if(isStatic) throw new ParseException("Duplicate static keyword");
+                    isStatic = true;
                     break;
                 }
                 case PUBLIC: {
                     jj_consume_token(PUBLIC);
+                    if(accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    accessModifier = Token.AccessModifier.Public;
                     break;
                 }
                 case PRIVATE: {
                     jj_consume_token(PRIVATE);
+                    if(accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    accessModifier = Token.AccessModifier.Private;
                     break;
                 }
                 case PROTECTED: {
                     jj_consume_token(PROTECTED);
+                    if(accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    accessModifier = Token.AccessModifier.Protected;
                     break;
                 }
                 default:
@@ -268,7 +278,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p(SymbolTable symbolTable)
+    static final public void __Member_p(Token.AccessModifier accessModifier, Boolean isStatic, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Member_p
                                     */
@@ -279,17 +289,19 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case ID: {
-                    jj_consume_token(ID);
-                    __MemberId(symbolTable);
+                    Token idForMemberID = jj_consume_token(ID);
+                    __MemberId(accessModifier, isStatic, idForMemberID, symbolTable);
                     break;
                 }
                 case BOOLEAN:
                 case CHAR:
                 case INT:
                 case VOID: {
-                    __PrimitiveType(symbolTable);
-                    __Type_p(symbolTable);
-                    __Member_p_p(symbolTable);
+                    Token.ReturnType primitiveType;
+                    Integer dimensionCount = 0;
+                    __PrimitiveType(primitiveType, symbolTable);
+                    __Type_p(dimensionCount, symbolTable);
+                    __Member_p_p(accessModifier, isStatic, primitiveType, dimensionCount, symbolTable);
                     break;
                 }
                 default:
@@ -324,7 +336,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __MemberId(SymbolTable symbolTable)
+    static final public void __MemberId(Token.AccessModifier accessModifier, Boolean isStatic, Token idForMemberID, SymbolTable symbolTable)//TODO: do this
             throws ParseException {/*
                                     * @bgen(jjtree) __MemberId
                                     */
@@ -574,7 +586,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Type_p(SymbolTable symbolTable)
+    static final public void __Type_p(Integer count, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Type_p
                                     */
@@ -595,6 +607,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 }
                 jj_consume_token(L_STRAIGHT_BRACKET);
                 jj_consume_token(R_STRAIGHT_BRACKET);
+                count++;
             }
         } finally {
             if (jjtc000) {
@@ -603,7 +616,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimitiveType(SymbolTable symbolTable)
+    static final public void __PrimitiveType(Token.ReturnType returnOrDataType, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __PrimitiveType
                                     */
