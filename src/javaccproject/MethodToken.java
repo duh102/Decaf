@@ -13,5 +13,6 @@ public class MethodToken extends MemberToken
     public MethodToken(Token myToken) {
         this.myToken = myToken;
         myContext = new SymbolTable();
+        myContext.tableOf = this;
     }
 }

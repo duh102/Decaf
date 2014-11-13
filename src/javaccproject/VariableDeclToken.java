@@ -1,6 +1,6 @@
 package javaccproject;
 
-public class VariableDeclToken extends MemberToken
+public class VariableDeclToken extends FormalArgVarDeclToken
 {
     /**
      * 
@@ -9,7 +9,6 @@ public class VariableDeclToken extends MemberToken
     public Token assignment;//if this decl has some assignment, fill it in here
     
     public VariableDeclToken(Token myToken, Token.DataType type) {
-        this.myToken = myToken;
-        this.dataType = type;
+        super(myToken, type);
     }
 }

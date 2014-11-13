@@ -98,8 +98,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             Token thisClass = new ClassToken(jj_consume_token(ID));
             symbolTable.setToken(thisClass);
             thisClass.containedIn = symbolTable;
-            thisClass.myContext = new SymbolTable();
-            thisClass.myContext.tableOf = thisClass;
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EXTENDS: {
@@ -350,8 +348,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case LP: {
                     //idForMemberID is the id of some method
                     Token method = new MethodToken(idForMemberID);
-                    __FormalArgs(symbolTable);//not done
-                    __Block(symbolTable);
+                    symbolTable.setToken(method);
+                    __FormalArgs((MethodToken)method, method.myContext);//not done
+                    __Block(method.myContext);
                     break;
                 }
                 case ID:
@@ -394,7 +393,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __FormalArgs(SymbolTable symbolTable)
+    static final public void __FormalArgs(MethodToken methodToken, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __FormalArgs
                                     */
@@ -633,18 +632,22 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case BOOLEAN: {
                     jj_consume_token(BOOLEAN);
+                    returnOrDataType = Token.ReturnType.Boolean;
                     break;
                 }
                 case CHAR: {
                     jj_consume_token(CHAR);
+                    returnOrDataType = Token.ReturnType.Character;
                     break;
                 }
                 case INT: {
                     jj_consume_token(INT);
+                    returnOrDataType = Token.ReturnType.Integer;
                     break;
                 }
                 case VOID: {
                     jj_consume_token(VOID);
+                    returnOrDataType = Token.ReturnType.Void;
                     break;
                 }
                 default:
