@@ -14,5 +14,6 @@ public class ClassToken extends Token
 
     public ClassToken(Token myToken) {
         this.myToken = myToken;
+        myContext = new SymbolTable();
     }
 }

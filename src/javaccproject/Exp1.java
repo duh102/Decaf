@@ -99,6 +99,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             symbolTable.setToken(thisClass);
             thisClass.containedIn = symbolTable;
             thisClass.myContext = new SymbolTable();
+            thisClass.myContext.tableOf = thisClass;
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EXTENDS: {
@@ -347,14 +348,18 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case LP: {
-                    __FormalArgs(symbolTable);
+                    //idForMemberID is the id of some method
+                    Token method = new MethodToken(idForMemberID);
+                    __FormalArgs(symbolTable);//not done
                     __Block(symbolTable);
                     break;
                 }
                 case ID:
                 case L_STRAIGHT_BRACKET: {
-                    __Type_p(symbolTable);
-                    __Member_p_p(symbolTable);
+                    //idForMemberID was an object type
+                    Integer dims = 0;
+                    __Type_p(dims, symbolTable);
+                    __Member_p_p(accessModifier, isStatic, dims, symbolTable);
                     break;
                 }
                 default:
@@ -2574,7 +2579,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p_p(SymbolTable symbolTable)
+    static final public void __Member_p_p(Token.AccessModifier accessModifier, Boolean isStatic, Integer dimensionCount, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __Member_p_p
                                     */
