@@ -8,7 +8,7 @@ public class MemberToken extends Token
      */
     private static final long serialVersionUID = -3952564775782197150L;
 
-    public Token myToken;
-    public Token parent;
-    public DataType myType;
+    public Token myToken = null;
+    public Token parent = null;
+    public DataType myType = null;
 }

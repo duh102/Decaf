@@ -504,23 +504,23 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
+            DataType formalArgType = new DataType();
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case BOOLEAN:
                 case CHAR:
                 case INT:
                 case VOID: {
-                    EnumContainer<Token.ReturnType> type;
-                    Integer arr = 0;
-                    __Type(type, arr, symbolTable);
-                    __VarDeclaratorId(type, arr, symbolTable);
+                    __Type(formalArgType, symbolTable);
+                    __VarDeclaratorId(formalArgType, symbolTable);
                     break;
                 }
                 case ID: {
                     Token type = jj_consume_token(ID);
-                    Integer arr = 0;
-                    __Type_p(arr, symbolTable);
-                    __VarDeclaratorId(type, arr, symbolTable);
+                    formalArgType.type = Token.ReturnType.Object;
+                    formalArgType.objectType = type.image;
+                    __Type_p(formalArgType, symbolTable);
+                    __VarDeclaratorId(formalArgType, symbolTable);
                     break;
                 }
                 default:
@@ -555,7 +555,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Type(SymbolTable symbolTable)
+    static final public void __Type(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Type
                                     */
@@ -563,10 +563,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            EnumContainer<Token.ReturnType> dataType = null;
-            __PrimitiveType(dataType, symbolTable);
-            Integer arrCount = 0;
-            __Type_p(arrCount, symbolTable);
+            __PrimitiveType(type, symbolTable);
+            __Type_p(type, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -594,7 +592,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Type_p(Integer count, SymbolTable symbolTable)
+    static final public void __Type_p(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Type_p
                                     */
@@ -615,7 +613,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 }
                 jj_consume_token(L_STRAIGHT_BRACKET);
                 jj_consume_token(R_STRAIGHT_BRACKET);
-                count++;
+                type.arrDim++;
             }
         } finally {
             if (jjtc000) {
@@ -624,7 +622,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimitiveType(Token.ReturnType returnOrDataType, SymbolTable symbolTable)
+    static final public void __PrimitiveType(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __PrimitiveType
                                     */
@@ -636,22 +634,22 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case BOOLEAN: {
                     jj_consume_token(BOOLEAN);
-                    returnOrDataType = Token.ReturnType.Boolean;
+                    type.type = Token.ReturnType.Boolean;
                     break;
                 }
                 case CHAR: {
                     jj_consume_token(CHAR);
-                    returnOrDataType = Token.ReturnType.Character;
+                    type.type = Token.ReturnType.Character;
                     break;
                 }
                 case INT: {
                     jj_consume_token(INT);
-                    returnOrDataType = Token.ReturnType.Integer;
+                    type.type = Token.ReturnType.Integer;
                     break;
                 }
                 case VOID: {
                     jj_consume_token(VOID);
-                    returnOrDataType = Token.ReturnType.Void;
+                    type.type = Token.ReturnType.Void;
                     break;
                 }
                 default:
@@ -666,7 +664,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __VarDeclaratorId(SymbolTable symbolTable)
+    static final public void __VarDeclaratorId(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __VarDeclaratorId
                                     */
@@ -674,8 +672,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            jj_consume_token(ID);
-            __Type_p(symbolTable);
+            Token formalParam = new FormalArgVarDeclToken(jj_consume_token(ID), type);
+            symbolTable.setToken(formalParam);
+            formalParam.containedIn = symbolTable;
+            __Type_p(type, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2586,7 +2586,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p_p(Token.AccessModifier accessModifier, Boolean isStatic, Integer dimensionCount, SymbolTable symbolTable)
+    static final public void __Member_p_p(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __Member_p_p
                                     */
@@ -2594,8 +2594,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            jj_consume_token(ID);
-            __Member_p_pPreId(symbolTable);
+            Token ident = jj_consume_token(ID);
+            __Member_p_pPreId(type, ident, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2623,7 +2623,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p_pPreId(SymbolTable symbolTable)
+    static final public void __Member_p_pPreId(DataType type, Token preId, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __Member_p_pPreId
                                     */
