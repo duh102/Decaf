@@ -13,10 +13,6 @@ public class Token implements java.io.Serializable
         Public, Private, Protected, Default
     };
 
-    enum DataType {
-        Integer, Character, Boolean, String, Object
-    };
-
     enum ReturnType {
         Integer, Character, Boolean, String, Object, Void
     };

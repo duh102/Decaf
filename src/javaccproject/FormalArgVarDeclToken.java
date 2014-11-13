@@ -10,7 +10,7 @@ public class FormalArgVarDeclToken extends MemberToken
 
     public FormalArgVarDeclToken(Token myToken, DataType type) {
         this.myToken = myToken;
-        this.dataType = type;
+        this.myType = type;
     }
 
 }

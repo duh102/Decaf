@@ -185,8 +185,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            Token.AccessModifier memberModifier = Token.AccessModifier.Default;
-            Boolean isStatic = false;
+            DataType memberType = new DataType();
             label_3: while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
                 {
@@ -201,9 +200,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                         jj_la1[3] = jj_gen;
                         break label_3;
                 }
-                __Modifier(memberModifier, isStatic, symbolTable);
+                __Modifier(memberType, symbolTable);
             }
-            __Member_p(memberModifier, isStatic, symbolTable);
+            __Member_p(memberType, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -231,7 +230,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Modifier(Token.AccessModifier accessModifier, Boolean isStatic, SymbolTable symbolTable)
+    static final public void __Modifier(DataType memberType, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Modifier
                                     */
@@ -243,26 +242,26 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case STATIC: {
                     jj_consume_token(STATIC);
-                    if(isStatic) throw new ParseException("Duplicate static keyword");
-                    isStatic = true;
+                    if(memberType.isStatic) throw new ParseException("Duplicate static keyword");
+                    memberType.isStatic = true;
                     break;
                 }
                 case PUBLIC: {
                     jj_consume_token(PUBLIC);
-                    if(accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
-                    accessModifier = Token.AccessModifier.Public;
+                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    memberType.accessModifier = Token.AccessModifier.Public;
                     break;
                 }
                 case PRIVATE: {
                     jj_consume_token(PRIVATE);
-                    if(accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
-                    accessModifier = Token.AccessModifier.Private;
+                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    memberType.accessModifier = Token.AccessModifier.Private;
                     break;
                 }
                 case PROTECTED: {
                     jj_consume_token(PROTECTED);
-                    if(accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
-                    accessModifier = Token.AccessModifier.Protected;
+                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    memberType.accessModifier = Token.AccessModifier.Protected;
                     break;
                 }
                 default:
@@ -277,7 +276,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Member_p(Token.AccessModifier accessModifier, Boolean isStatic, SymbolTable symbolTable)
+    static final public void __Member_p(DataType memberType, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Member_p
                                     */
@@ -289,18 +288,16 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case ID: {
                     Token idForMemberID = jj_consume_token(ID);
-                    __MemberId(accessModifier, isStatic, idForMemberID, symbolTable);
+                    __MemberId(memberType, idForMemberID, symbolTable);
                     break;
                 }
                 case BOOLEAN:
                 case CHAR:
                 case INT:
                 case VOID: {
-                    Token.ReturnType primitiveType;
-                    Integer dimensionCount = 0;
-                    __PrimitiveType(primitiveType, symbolTable);
-                    __Type_p(dimensionCount, symbolTable);
-                    __Member_p_p(accessModifier, isStatic, primitiveType, dimensionCount, symbolTable);
+                    __PrimitiveType(memberType, symbolTable);
+                    __Type_p(memberType, symbolTable);
+                    __Member_p_p(memberType, symbolTable);
                     break;
                 }
                 default:
@@ -335,7 +332,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __MemberId(Token.AccessModifier accessModifier, Boolean isStatic, Token idForMemberID, SymbolTable symbolTable)//TODO: do this
+    static final public void __MemberId(DataType memberType, Token idForMemberID, SymbolTable symbolTable)//TODO: do this
             throws ParseException {/*
                                     * @bgen(jjtree) __MemberId
                                     */
@@ -348,6 +345,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case LP: {
                     //idForMemberID is the id of some method
                     Token method = new MethodToken(idForMemberID);
+                    ((MethodToken)method).myType = memberType;
                     symbolTable.setToken(method);
                     __FormalArgs((MethodToken)method, method.myContext);//not done
                     __Block(method.myContext);
@@ -356,9 +354,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case ID:
                 case L_STRAIGHT_BRACKET: {
                     //idForMemberID was an object type
-                    Integer dims = 0;
-                    __Type_p(dims, symbolTable);
-                    __Member_p_p(accessModifier, isStatic, dims, symbolTable);
+                    memberType.type = Token.ReturnType.Object;
+                    memberType.objectType = idForMemberID.image;
+                    __Type_p(memberType, symbolTable);
+                    __Member_p_p(memberType, symbolTable);
                     break;
                 }
                 default:
@@ -511,14 +510,17 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case CHAR:
                 case INT:
                 case VOID: {
-                    __Type(symbolTable);
-                    __VarDeclaratorId(symbolTable);
+                    EnumContainer<Token.ReturnType> type;
+                    Integer arr = 0;
+                    __Type(type, arr, symbolTable);
+                    __VarDeclaratorId(type, arr, symbolTable);
                     break;
                 }
                 case ID: {
-                    jj_consume_token(ID);
-                    __Type_p(symbolTable);
-                    __VarDeclaratorId(symbolTable);
+                    Token type = jj_consume_token(ID);
+                    Integer arr = 0;
+                    __Type_p(arr, symbolTable);
+                    __VarDeclaratorId(type, arr, symbolTable);
                     break;
                 }
                 default:
@@ -561,8 +563,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            __PrimitiveType(symbolTable);
-            __Type_p(symbolTable);
+            EnumContainer<Token.ReturnType> dataType = null;
+            __PrimitiveType(dataType, symbolTable);
+            Integer arrCount = 0;
+            __Type_p(arrCount, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);

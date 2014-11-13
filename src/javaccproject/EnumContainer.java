@@ -10,6 +10,9 @@ package javaccproject;
  *
  * @author Lenovo
  */
-public enum SymbolTokenType {
-    CLASS, MEMBER, LITERAL, EXPRESSION
+public class EnumContainer<T extends Enum<T>> {
+    public T item;
+    public EnumContainer(T item) {
+        this.item = item;
+    }
 }
