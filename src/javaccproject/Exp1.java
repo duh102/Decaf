@@ -29,6 +29,17 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
      * underscores to denote that they are methods as opposed to keywords
      * defined above.
      */
+    
+    //recursive checking symbol tables
+    private static boolean checkRecursiveSymbolTables(SymbolTable symbolTable, String tokenToCheck){
+        if (symbolTable == null) return false;
+        if(symbolTable.getToken(tokenToCheck) == null){
+            return (symbolTable.tableOf == null) ? false :
+                    checkRecursiveSymbolTables(symbolTable.tableOf.myContext, tokenToCheck);
+        }
+        return true;
+    }
+    
     final public void __Start(SymbolTable symbolTable) throws ParseException {/*
                                                                                * @
                                                                                * bgen
@@ -2052,8 +2063,13 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     __NonNewArrayExpr(symbolTable);
                     break;
                 }
-                case ID: {
-                    jj_consume_token(ID);
+                case ID: {       
+                    //check if token is in symbol table, if not add it.
+                    Token currToken = jj_consume_token(ID);
+                    if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
+                        //if not contained
+                        throw new ParseException("Variable used before declaration.");
+                    }
                     __PrimaryId(symbolTable);
                     break;
                 }
