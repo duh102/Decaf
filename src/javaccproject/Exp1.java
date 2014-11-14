@@ -35,7 +35,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         if (symbolTable == null) return false;
         if(symbolTable.getToken(tokenToCheck) == null){
             return (symbolTable.tableOf == null) ? false :
-                    checkRecursiveSymbolTables(symbolTable.tableOf.myContext, tokenToCheck);
+                    checkRecursiveSymbolTables(symbolTable.tableOf.containedIn, tokenToCheck);
         }
         return true;
     }

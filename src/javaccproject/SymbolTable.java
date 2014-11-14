@@ -22,6 +22,7 @@ public class SymbolTable
             throw new ParseException("Duplicate symbol");
         } else {
             table.put(t.image, t);
+            t.containedIn = this;
         }
     }
 
