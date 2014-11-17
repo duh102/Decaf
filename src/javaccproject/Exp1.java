@@ -1,5 +1,8 @@
 package javaccproject;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringReader;
 
 /* Exp1.java */
@@ -10,8 +13,45 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
   */
 
     protected static JJTExp1State jjtree = new JJTExp1State();
+    
+    public static void main(String[] args) {
+        try {
+            String file = "";
+            if (args.length == 0 || args[0].length() == 0) {
+                // stdin, not implemented
+                System.err.println("Reading from stdin not implemented");
+                return;
+            } else {
+                if (args[0].split(" ").length == 1) {
+                    // file
+                    BufferedReader in = new BufferedReader(new FileReader(args[0]));
+                    StringBuilder str = new StringBuilder();
+                    String temp;
+                    while((temp = in.readLine())!= null)
+                    {
+                        str.append(String.format("%s\n", temp));
+                    }
+                    in.close();
+                    file = str.toString();
+                } else {
+                    // redirected input
+                    file = args[0];
+                }
+            }
+            SymbolTable result = parse(file);
+            System.out.printf("Parsing successful, results:\n%s", result);
+        } catch (ParseException e) {
+            // Catching Throwable is ugly but JavaCC throws Error objects!
+            System.err.println("Syntax check failed: " + e.getMessage());
+        } catch (java.io.FileNotFoundException e) {
+            System.err.printf("File not found: %s\u005cn", args[0]);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-    public static SymbolTable parse(String toParse) {
+    public static SymbolTable parse(String toParse) throws ParseException {
         SymbolTable symbolTable = new SymbolTable();
         try {
             new Exp1(new StringReader(toParse)).__Start(symbolTable);
@@ -19,9 +59,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             return symbolTable;
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
-            System.err.println("Syntax check failed: " + e.getMessage());
+            throw e;
         }
-        return null;
     }
 
     /*
@@ -92,7 +131,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     final public void __Class(SymbolTable symbolTable) throws ParseException {/*
                                                                                * @
                                                                                * bgen
@@ -169,7 +207,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     final public void __Super(ClassToken thisClass, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __Super
@@ -187,7 +224,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Member(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Member
@@ -240,7 +276,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Modifier(DataType memberType, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Modifier
@@ -286,7 +321,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Member_p(DataType memberType, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Member_p
@@ -342,7 +376,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __MemberId(DataType memberType, Token idForMemberID, SymbolTable symbolTable)//TODO: do this
             throws ParseException {/*
                                     * @bgen(jjtree) __MemberId
@@ -402,7 +435,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __FormalArgs(MethodToken methodToken, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __FormalArgs
@@ -456,7 +488,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __FormalArgList(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __FormalArgList
@@ -506,7 +537,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __FormalArg(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __FormalArg
@@ -565,7 +595,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Type(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Type
@@ -602,7 +631,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Type_p(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Type_p
@@ -632,7 +660,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __PrimitiveType(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __PrimitiveType
@@ -674,7 +701,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __VarDeclaratorId(DataType type, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __VarDeclaratorId
@@ -713,7 +739,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Block(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Block
@@ -786,7 +811,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Statement(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __Statement
@@ -794,6 +818,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SimpleNode jjtn000 = new SimpleNode(JJT__STATEMENT);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
+        //create new data type
+        DataType type = new DataType();
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
@@ -813,7 +839,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                             case CHAR:
                             case INT:
                             case VOID: {
-                                __Type(symbolTable);
+                                __Type(type, symbolTable);
                                 __VarDeclaratorList(symbolTable);
                                 jj_consume_token(SEMICOLON);
                                 break;
@@ -822,7 +848,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                 jj_la1[16] = jj_gen;
                                 if (jj_2_2(2)) {
                                     jj_consume_token(ID);
-                                    __Type_p(symbolTable);
+                                    __Type_p(type, symbolTable);
                                     __VarDeclaratorList(symbolTable);
                                     jj_consume_token(SEMICOLON);
                                 } else {
@@ -934,7 +960,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __VarDeclaratorList(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen ( jjtree ) __VarDeclaratorList
@@ -984,7 +1009,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __VarDeclaratorListPreId(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @ bgen ( jjtree ) __VarDeclaratorListPreId
@@ -1034,7 +1058,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __VarDeclarator(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __VarDeclarator
@@ -1043,7 +1066,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            __VarDeclaratorId(symbolTable);
+            __VarDeclaratorId(new DataType(), symbolTable);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EQ: {
@@ -1081,7 +1104,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __VarDeclaratorPreId(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen ( jjtree ) __VarDeclaratorPreId
@@ -1090,7 +1112,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            __Type_p(symbolTable);
+            __Type_p(new DataType(), symbolTable);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EQ: {
@@ -1992,7 +2014,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __Primary(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __Primary
@@ -2042,7 +2063,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __PrimaryReal(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __PrimaryReal
@@ -2113,7 +2133,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-
     static final public void __NonNewArrayExpr(SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __NonNewArrayExpr
@@ -2471,7 +2490,11 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case ID: {
-                    jj_consume_token(ID);
+                    Token currToken = jj_consume_token(ID);
+                    if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
+                        //if not contained
+                        throw new ParseException("Variable used before declaration.");
+                    }
                     __ActualDim(symbolTable);
                     break;
                 }
@@ -2479,7 +2502,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case CHAR:
                 case INT:
                 case VOID: {
-                    __PrimitiveType(symbolTable);
+                    __PrimitiveType(new DataType(), symbolTable);
                     __DimPlus(symbolTable);
                     break;
                 }
@@ -2657,7 +2680,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     break;
                 }
                 case LP: {
-                    __MethodCtorCombo(symbolTable);
+                    __MethodCtorCombo(new MethodToken(preId), symbolTable);
                     break;
                 }
                 default:
@@ -2729,7 +2752,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __MethodCtorCombo(SymbolTable symbolTable)
+    static final public void __MethodCtorCombo(MethodToken token, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen( jjtree ) __MethodCtorCombo
                                     */
@@ -2737,7 +2760,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            __FormalArgs(symbolTable);
+            __FormalArgs(token, symbolTable);
             __Block(symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
