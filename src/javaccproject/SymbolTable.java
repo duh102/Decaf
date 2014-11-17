@@ -8,6 +8,10 @@ package javaccproject;
 
 import java.util.HashMap;
 
+import javaccproject.tokens.ClassToken;
+import javaccproject.tokens.MethodToken;
+import javaccproject.tokens.Token;
+
 /**
  *
  * @author Lenovo

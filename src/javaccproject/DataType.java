@@ -1,5 +1,7 @@
 package javaccproject;
 
+import javaccproject.tokens.Token;
+
 public class DataType
 {
     public Token.AccessModifier accessModifier = Token.AccessModifier.Default;

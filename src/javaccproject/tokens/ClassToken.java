@@ -1,4 +1,6 @@
-package javaccproject;
+package javaccproject.tokens;
+
+import javaccproject.SymbolTable;
 
 public class ClassToken extends Token
 {

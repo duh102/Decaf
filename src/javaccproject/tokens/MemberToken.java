@@ -1,4 +1,6 @@
-package javaccproject;
+package javaccproject.tokens;
+
+import javaccproject.DataType;
 
 public class MemberToken extends Token
 {

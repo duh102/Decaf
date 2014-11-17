@@ -1,4 +1,7 @@
-package javaccproject;
+package javaccproject.tokens;
+
+import javaccproject.SimpleNode;
+import javaccproject.SymbolTable;
 
 public class MethodToken extends MemberToken
 {

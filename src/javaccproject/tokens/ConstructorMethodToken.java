@@ -1,4 +1,4 @@
-package javaccproject;
+package javaccproject.tokens;
 
 public class ConstructorMethodToken extends MethodToken
 {
