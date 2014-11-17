@@ -11,4 +11,8 @@ public class VariableDeclToken extends FormalArgVarDeclToken
     public VariableDeclToken(Token myToken, DataType type) {
         super(myToken, type);
     }
+    
+    public String toString() {
+        return String.format("variable %s %s", myType, image);
+    }
 }

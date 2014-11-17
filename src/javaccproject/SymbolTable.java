@@ -40,10 +40,10 @@ public class SymbolTable
         }
         String tabs = new String(tab);
         StringBuilder toReturn = new StringBuilder();
-        int longestKey = 0, extraWidth = 4+6;
+        int longestKey = 0, extraWidth = 4;
         for(String key : table.keySet())
         {
-            longestKey = Math.max(longestKey, key.length());
+            longestKey = Math.max(longestKey, table.get(key).toString().length());
         }
         char[] tableTopBottom = new char[longestKey+extraWidth];
         for(int i = 0; i < tableTopBottom.length; i++)
@@ -55,14 +55,13 @@ public class SymbolTable
         toReturn.append(String.format("%s%s\n", tabs, tableSeparator));
         for(String key : table.keySet())
         {
-            if(table.get(key) instanceof ClassToken || table.get(key) instanceof MethodToken)
+            if(table.get(key) instanceof ClassToken || table.get(key) instanceof MemberToken)
             {
-                String type = table.get(key) instanceof ClassToken? "class": "method";
-                toReturn.append(String.format(String.format("%%s| %%%ds |\n%%s\n", longestKey+extraWidth-4), tabs, String.format("%s %s", key, type), table.get(key).myContext));
+                toReturn.append(String.format(String.format("%%s| %%%ds |\n%%s\n", longestKey+extraWidth-4), tabs, table.get(key).toString(), table.get(key).myContext));
             }
             else
             {
-                toReturn.append(String.format(String.format("%%s| %%%ds |\n", longestKey+extraWidth-4), tabs, String.format("%s var",key)));
+                toReturn.append(String.format(String.format("%%s| %%%ds |\n", longestKey+extraWidth-4), tabs, table.get(key).toString()));
             }
         }
         toReturn.append(String.format("%s%s", tabs, tableSeparator));

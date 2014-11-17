@@ -16,4 +16,9 @@ public class ClassToken extends Token
         myContext = new SymbolTable();
         myContext.tableOf = this;
     }
+    
+    public String toString()
+    {
+        return String.format("class %s", image);
+    }
 }

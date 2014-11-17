@@ -9,4 +9,25 @@ public class DataType
     public Boolean isStatic = false;
     
     // some things are assumed by default, the type itself is not
+    
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append(String.format("%s%s %s", accessModifier, isStatic?" static": "", type==Token.ReturnType.Object?objectType:type));
+        for(int i = 0; i < arrDim; i++) {
+            str.append("[]");
+        }
+        return str.toString();
+    }
+    
+    public DataType() {
+        super();
+    }
+    
+    public DataType(DataType toCopy){
+        this.accessModifier = toCopy.accessModifier;
+        this.type = toCopy.type;
+        this.objectType = toCopy.objectType;
+        this.arrDim = toCopy.arrDim;
+        this.isStatic = toCopy.isStatic;
+    }
 }

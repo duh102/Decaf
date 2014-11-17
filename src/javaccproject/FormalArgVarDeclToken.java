@@ -12,5 +12,9 @@ public class FormalArgVarDeclToken extends MemberToken
         super(myToken);
         this.myType = type;
     }
+    
+    public String toString() {
+        return String.format("formal arg %s %s", myType, image);
+    }
 
 }

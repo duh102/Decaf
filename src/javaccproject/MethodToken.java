@@ -15,4 +15,8 @@ public class MethodToken extends MemberToken
         myContext = new SymbolTable();
         myContext.tableOf = this;
     }
+    
+    public String toString() {
+        return String.format("method %s %s", myType, image);
+    }
 }

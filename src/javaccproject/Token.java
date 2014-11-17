@@ -14,7 +14,14 @@ public class Token implements java.io.Serializable
     };
 
     enum ReturnType {
-        Integer, Character, Boolean, String, Object, Void
+        Integer("int"), Character("char"), Boolean("boolean"), String("String"), Object("Object"), Void("void");
+        String name;
+        private ReturnType(String properName) {
+            this.name = properName;
+        }
+        public String toString() {
+            return name;
+        }
     };
 
     public SymbolTable containedIn = null;
