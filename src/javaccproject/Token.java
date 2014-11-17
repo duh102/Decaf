@@ -101,12 +101,34 @@ public class Token implements java.io.Serializable
         this.kind = kind;
         this.image = image;
     }
+    
+    public Token(Token toCopy) {
+        this.kind = toCopy.kind;
+        this.image = toCopy.image;
+        this.beginColumn = toCopy.beginColumn;
+        this.beginLine = toCopy.beginLine;
+        this.containedIn = toCopy.containedIn;
+        this.endColumn = toCopy.endColumn;
+        this.endLine = toCopy.endLine;
+        this.myContext = toCopy.myContext;
+        this.next = toCopy.next;
+        this.specialToken = toCopy.specialToken;
+    }
 
     /**
      * Returns the image.
      */
     public String toString() {
         return image;
+    }
+    
+    public String image() {
+        return image;
+    }
+    
+    public String parseExcept()
+    {
+        return String.format("line %d column %d", beginLine, beginColumn);
     }
 
     /**

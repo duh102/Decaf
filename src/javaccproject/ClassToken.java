@@ -10,10 +10,9 @@ public class ClassToken extends Token
     private static final long serialVersionUID = -8780524111994565692L;
 
     public String superclass;
-    public Token myToken;
 
     public ClassToken(Token myToken) {
-        this.myToken = myToken;
+        super(myToken);
         myContext = new SymbolTable();
         myContext.tableOf = this;
     }

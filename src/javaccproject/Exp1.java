@@ -71,12 +71,13 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
     
     //recursive checking symbol tables
     private static boolean checkRecursiveSymbolTables(SymbolTable symbolTable, String tokenToCheck){
-        if (symbolTable == null) return false;
+        return true;
+        /*if (symbolTable == null) return false;
         if(symbolTable.getToken(tokenToCheck) == null){
             return (symbolTable.tableOf == null) ? false :
                     checkRecursiveSymbolTables(symbolTable.tableOf.containedIn, tokenToCheck);
         }
-        return true;
+        return true;*/
     }
     
     final public void __Start(SymbolTable symbolTable) throws ParseException {/*
@@ -287,26 +288,26 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case STATIC: {
-                    jj_consume_token(STATIC);
-                    if(memberType.isStatic) throw new ParseException("Duplicate static keyword");
+                    Token token = jj_consume_token(STATIC);
+                    if(memberType.isStatic) throw new ParseException(String.format("Error at %s: Duplicate static keyword", token.parseExcept()));
                     memberType.isStatic = true;
                     break;
                 }
                 case PUBLIC: {
-                    jj_consume_token(PUBLIC);
-                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    Token token = jj_consume_token(PUBLIC);
+                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException(String.format("Error at %s: Conflicting access modifiers", token.parseExcept()));
                     memberType.accessModifier = Token.AccessModifier.Public;
                     break;
                 }
                 case PRIVATE: {
-                    jj_consume_token(PRIVATE);
-                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    Token token = jj_consume_token(PRIVATE);
+                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException(String.format("Error at %s: Conflicting access modifiers", token.parseExcept()));
                     memberType.accessModifier = Token.AccessModifier.Private;
                     break;
                 }
                 case PROTECTED: {
-                    jj_consume_token(PROTECTED);
-                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException("Conflicting access modifiers");
+                    Token token = jj_consume_token(PROTECTED);
+                    if(memberType.accessModifier != Token.AccessModifier.Default) throw new ParseException(String.format("Error at %s: Conflicting access modifiers", token.parseExcept()));
                     memberType.accessModifier = Token.AccessModifier.Protected;
                     break;
                 }
@@ -2088,7 +2089,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     Token currToken = jj_consume_token(ID);
                     if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
                         //if not contained
-                        throw new ParseException("Variable used before declaration.");
+                        throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
                     }
                     __PrimaryId(symbolTable);
                     break;
@@ -2493,7 +2494,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     Token currToken = jj_consume_token(ID);
                     if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
                         //if not contained
-                        throw new ParseException("Variable used before declaration.");
+                        throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
                     }
                     __ActualDim(symbolTable);
                     break;

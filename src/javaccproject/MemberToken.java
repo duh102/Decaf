@@ -8,7 +8,15 @@ public class MemberToken extends Token
      */
     private static final long serialVersionUID = -3952564775782197150L;
 
-    public Token myToken = null;
     public Token parent = null;
     public DataType myType = null;
+    
+    public MemberToken(Token toCopy) {
+        super(toCopy);
+        if(toCopy instanceof MemberToken) {
+            MemberToken toCopyFrom = (MemberToken)toCopy;
+            this.parent = toCopyFrom.parent;
+            this.myType = toCopyFrom.myType;
+        }
+    }
 }

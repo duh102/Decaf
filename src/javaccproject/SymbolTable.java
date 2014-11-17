@@ -19,7 +19,7 @@ public class SymbolTable
 
     void setToken(Token t) throws ParseException {
         if (table.containsKey(t.image)) {
-            throw new ParseException("Duplicate symbol");
+            throw new ParseException(String.format("Error at %s: Duplicate symbol %s", t.parseExcept(), t));
         } else {
             table.put(t.image, t);
             t.containedIn = this;
@@ -40,17 +40,32 @@ public class SymbolTable
         }
         String tabs = new String(tab);
         StringBuilder toReturn = new StringBuilder();
+        int longestKey = 0, extraWidth = 4+6;
+        for(String key : table.keySet())
+        {
+            longestKey = Math.max(longestKey, key.length());
+        }
+        char[] tableTopBottom = new char[longestKey+extraWidth];
+        for(int i = 0; i < tableTopBottom.length; i++)
+        {
+            tableTopBottom[i] = '-';
+        }
+        String tableSeparator = new String(tableTopBottom);
+        
+        toReturn.append(String.format("%s%s\n", tabs, tableSeparator));
         for(String key : table.keySet())
         {
             if(table.get(key) instanceof ClassToken || table.get(key) instanceof MethodToken)
             {
-                toReturn.append(String.format("%s%s\n%s\n", tabs, key, table.get(key).myContext));
+                String type = table.get(key) instanceof ClassToken? "class": "method";
+                toReturn.append(String.format(String.format("%%s| %%%ds |\n%%s\n", longestKey+extraWidth-4), tabs, String.format("%s %s", key, type), table.get(key).myContext));
             }
             else
             {
-                toReturn.append(String.format("%s%s variable\n", tabs, key));
+                toReturn.append(String.format(String.format("%%s| %%%ds |\n", longestKey+extraWidth-4), tabs, String.format("%s var",key)));
             }
         }
+        toReturn.append(String.format("%s%s", tabs, tableSeparator));
         return toReturn.toString();
     }
     

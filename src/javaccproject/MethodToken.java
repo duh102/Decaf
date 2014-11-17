@@ -11,7 +11,7 @@ public class MethodToken extends MemberToken
     public SimpleNode codeInside;
     
     public MethodToken(Token myToken) {
-        this.myToken = myToken;
+        super(myToken);
         myContext = new SymbolTable();
         myContext.tableOf = this;
     }
