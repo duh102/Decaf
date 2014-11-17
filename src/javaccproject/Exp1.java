@@ -389,7 +389,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case LP: {
                     //idForMemberID is the id of some method
-                    Token method = new MethodToken(idForMemberID);
+                    Token method;
+                    if(memberType.type != null) method = new MethodToken(idForMemberID);
+                    else method = new ConstructorMethodToken(idForMemberID);
                     ((MethodToken)method).myType = memberType;
                     symbolTable.setToken(method);
                     method.containedIn = symbolTable;
@@ -2683,11 +2685,18 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case SEMICOLON:
                 case COMMA:
                 case EQ: {
+                    //preId was the name of some variable probably
                     __Field(type, preId, symbolTable);
                     break;
                 }
                 case LP: {
-                    __MethodCtorCombo(new MethodToken(preId), symbolTable);
+                    //preId was the name of a method
+                    Token newMethod = new MethodToken(preId);
+                    MethodToken methodTemp = (MethodToken)newMethod;
+                    methodTemp.myType = type;
+                    symbolTable.setToken(newMethod);
+                    newMethod.containedIn = symbolTable;
+                    __MethodCtorCombo(methodTemp, methodTemp.myContext);
                     break;
                 }
                 default:

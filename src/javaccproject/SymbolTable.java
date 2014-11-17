@@ -55,7 +55,7 @@ public class SymbolTable
         toReturn.append(String.format("%s%s\n", tabs, tableSeparator));
         for(String key : table.keySet())
         {
-            if(table.get(key) instanceof ClassToken || table.get(key) instanceof MemberToken)
+            if(table.get(key) instanceof ClassToken || table.get(key) instanceof MethodToken)
             {
                 toReturn.append(String.format(String.format("%%s| %%%ds |\n%%s\n", longestKey+extraWidth-4), tabs, table.get(key).toString(), table.get(key).myContext));
             }
