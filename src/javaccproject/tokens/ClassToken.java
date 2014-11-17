@@ -23,4 +23,12 @@ public class ClassToken extends Token
     {
         return String.format("class %s", image);
     }
+    
+    public String symbolTableKey() {
+        return String.format("class%s", image);
+    }
+    
+    public static String symbolTableKey(String key){
+        return String.format("class%s", key);
+    }
 }

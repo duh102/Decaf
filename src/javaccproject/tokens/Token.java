@@ -10,7 +10,6 @@ import javaccproject.SymbolTable;
 
 public class Token implements java.io.Serializable
 {
-
     public enum AccessModifier {
         Public, Private, Protected, Default
     };
@@ -122,6 +121,14 @@ public class Token implements java.io.Serializable
         this.myContext = toCopy.myContext;
         this.next = toCopy.next;
         this.specialToken = toCopy.specialToken;
+    }
+    
+    public String symbolTableKey() {
+        return image;
+    }
+    
+    public static String symbolTableKey(String key){
+        return key;
     }
 
     /**

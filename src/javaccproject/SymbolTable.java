@@ -22,10 +22,10 @@ public class SymbolTable
     HashMap<String, Token> table = new HashMap<String, Token>();
 
     void setToken(Token t) throws ParseException {
-        if (table.containsKey(t.image)) {
+        if (table.containsKey(t.symbolTableKey())) {
             throw new ParseException(String.format("Error at %s: Duplicate symbol %s", t.parseExcept(), t));
         } else {
-            table.put(t.image, t);
+            table.put(t.symbolTableKey(), t);
             t.containedIn = this;
         }
     }

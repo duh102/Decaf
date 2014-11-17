@@ -21,4 +21,12 @@ public class MemberToken extends Token
             this.myType = toCopyFrom.myType;
         }
     }
+    
+    public String symbolTableKey() {
+        return String.format("var%s", image);
+    }
+    
+    public static String symbolTableKey(String key){
+        return String.format("var%s", key);
+    }
 }

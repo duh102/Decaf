@@ -22,4 +22,12 @@ public class MethodToken extends MemberToken
     public String toString() {
         return String.format("method %s %s", myType, image);
     }
+    
+    public String symbolTableKey() {
+        return String.format("method%s", image);
+    }
+    
+    public static String symbolTableKey(String key){
+        return String.format("method%s", key);
+    }
 }
