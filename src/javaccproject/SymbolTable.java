@@ -9,6 +9,8 @@ package javaccproject;
 import java.util.HashMap;
 
 import javaccproject.tokens.ClassToken;
+import javaccproject.tokens.ElseToken;
+import javaccproject.tokens.IfToken;
 import javaccproject.tokens.MethodToken;
 import javaccproject.tokens.Token;
 
@@ -59,7 +61,7 @@ public class SymbolTable
         toReturn.append(String.format("%s%s\n", tabs, tableSeparator));
         for(String key : table.keySet())
         {
-            if(table.get(key) instanceof ClassToken || table.get(key) instanceof MethodToken)
+            if(table.get(key) instanceof ClassToken || table.get(key) instanceof MethodToken || table.get(key) instanceof IfToken || table.get(key) instanceof ElseToken)
             {
                 toReturn.append(String.format(String.format("%%s| %%%ds |\n%%s\n", longestKey+extraWidth-4), tabs, table.get(key).toString(), table.get(key).myContext));
             }
