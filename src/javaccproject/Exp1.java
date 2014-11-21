@@ -158,6 +158,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             Token thisClass = new ClassToken(jj_consume_token(ID));
             symbolTable.setToken(thisClass);
             thisClass.containedIn = symbolTable;
+            jjtn000.jjtSetValue(thisClass.image);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EXTENDS: {
@@ -2235,23 +2236,28 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case NULL_LITERAL: {
-                    jj_consume_token(NULL_LITERAL);
+                    Token literal = jj_consume_token(NULL_LITERAL);
+                    jjtn000.jjtSetValue(literal.image);
                     break;
                 }
                 case BOOLEAN_LITERAL: {
-                    jj_consume_token(BOOLEAN_LITERAL);
+                    Token literal = jj_consume_token(BOOLEAN_LITERAL);
+                    jjtn000.jjtSetValue(literal.image);
                     break;
                 }
                 case INT_LITERAL: {
-                    jj_consume_token(INT_LITERAL);
+                    Token literal = jj_consume_token(INT_LITERAL);
+                    jjtn000.jjtSetValue(literal.image);
                     break;
                 }
                 case CHAR_LITERAL: {
-                    jj_consume_token(CHAR_LITERAL);
+                    Token literal = jj_consume_token(CHAR_LITERAL);
+                    jjtn000.jjtSetValue(literal.image);
                     break;
                 }
                 case STRING_LITERAL: {
-                    jj_consume_token(STRING_LITERAL);
+                    Token literal = jj_consume_token(STRING_LITERAL);
+                    jjtn000.jjtSetValue(literal.image);
                     break;
                 }
                 default:
