@@ -48,7 +48,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     file = args[0];
                 }
             }
-            SymbolTable result = parse(file);
+            ParseResult result = parse(file);
             System.out.printf("Parsing successful, results:\n%s", result);
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
@@ -61,12 +61,12 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    public static SymbolTable parse(String toParse) throws ParseException {
+    public static ParseResult parse(String toParse) throws ParseException {
         SymbolTable symbolTable = new SymbolTable();
         try {
             new Exp1(new StringReader(toParse)).__Start(symbolTable);
             // debug: System.out.println("Syntax is okay");
-            return symbolTable;
+            return new ParseResult(symbolTable, jjtree.rootNode());
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
             throw e;
