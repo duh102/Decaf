@@ -21,8 +21,31 @@ public class DataType
         return str.toString();
     }
     
+    public String toString(boolean useAccess)
+    {
+        if(useAccess)
+            return toString();
+        else
+        {
+            StringBuilder str = new StringBuilder();
+            str.append(String.format("%s", type==Token.ReturnType.Object?objectType:type));
+            for(int i = 0; i < arrDim; i++) {
+                str.append("[]");
+            }
+            return str.toString();
+        }
+    }
+    
     public DataType() {
         super();
+    }
+    
+    public DataType(Token.ReturnType type, String objectType, int arrdim)
+    {
+        super();
+        this.type = type;
+        this.objectType = objectType;
+        this.arrDim = arrdim;
     }
     
     public DataType(DataType toCopy){

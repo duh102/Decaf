@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javaccproject.codegen.Literal;
+import javaccproject.codegen.Operator;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
@@ -98,7 +100,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                                                                * )
                                                                                * __Start
                                                                                */
-        SimpleNode jjtn000 = new SimpleNode(JJT__START);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__START);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -150,7 +152,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                                                                * )
                                                                                * __Class
                                                                                */
-        SimpleNode jjtn000 = new SimpleNode(JJT__CLASS);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__CLASS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -223,7 +225,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __Super
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__SUPER);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__SUPER);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -240,7 +242,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Member
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__MEMBER);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -292,7 +294,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Modifier
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__MODIFIER);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__MODIFIER);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -337,7 +339,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Member_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__MEMBER_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -392,7 +394,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __MemberId
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__MEMBERID);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__MEMBERID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -454,7 +456,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __FormalArgs
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__FORMALARGS);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__FORMALARGS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -507,7 +509,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __FormalArgList
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__FORMALARGLIST);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__FORMALARGLIST);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -556,7 +558,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __FormalArg
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__FORMALARG);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__FORMALARG);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -614,7 +616,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Type
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__TYPE);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__TYPE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -650,7 +652,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Type_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__TYPE_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__TYPE_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -679,7 +681,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __PrimitiveType
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__PRIMITIVETYPE);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMITIVETYPE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -720,7 +722,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __VarDeclaratorId
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORID);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__VARDECLARATORID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -760,7 +762,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Block
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BLOCK);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BLOCK);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -832,7 +834,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __Statement
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__STATEMENT);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__STATEMENT);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         //create new data type
@@ -990,7 +992,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen ( jjtree ) __VarDeclaratorList
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORLIST);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__VARDECLARATORLIST);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1039,7 +1041,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @ bgen ( jjtree ) __VarDeclaratorListPreId
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORLISTPREID);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__VARDECLARATORLISTPREID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1088,7 +1090,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __VarDeclarator
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATOR);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__VARDECLARATOR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1134,7 +1136,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen ( jjtree ) __VarDeclaratorPreId
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__VARDECLARATORPREID);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__VARDECLARATORPREID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1184,7 +1186,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __Expression
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1230,7 +1232,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __Expression_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1276,7 +1278,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __Expression_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1322,7 +1324,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen ( jjtree ) __Expression_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1369,7 +1371,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen ( jjtree ) __Expression_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1418,7 +1420,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @ bgen ( jjtree ) __Expression_p_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1465,7 +1467,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @ bgen ( jjtree ) __Expression_p_p_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1514,7 +1516,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                     * @ bgen ( jjtree )
                                     * __Expression_p_p_p_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSION_P_P_P_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION_P_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1576,7 +1578,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __ExpressionA_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1613,7 +1615,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __ExpressionA_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1650,7 +1652,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen ( jjtree ) __ExpressionA_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1687,7 +1689,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen ( jjtree ) __ExpressionA_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1724,7 +1726,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @ bgen ( jjtree ) __ExpressionA_p_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1762,7 +1764,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                     * @ bgen ( jjtree )
                                     * __ExpressionA_p_p_p_p_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1797,7 +1799,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
 
     static final public void __ExpressionA_p_p_p_p_p_p_p(SymbolTable symbolTable)
             throws ParseException {/* @bgen(jjtree) __ExpressionA_p_p_p_p_p_p_p */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRESSIONA_P_P_P_P_P_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSIONA_P_P_P_P_P_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -1834,11 +1836,12 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __BinaryOpSeven
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPSEVEN);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPSEVEN);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            jj_consume_token(EQ);
+            Token token = jj_consume_token(EQ);
+            jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Equals));
         } finally {
             if (jjtc000) {
                 jjtree.closeNodeScope(jjtn000, true);
@@ -1850,11 +1853,12 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __BinaryOpSix
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPSIX);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPSIX);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            jj_consume_token(DBL_HOR_BAR);
+            Token token = jj_consume_token(DBL_HOR_BAR);
+            jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.DoubleVerticalBar));
         } finally {
             if (jjtc000) {
                 jjtree.closeNodeScope(jjtn000, true);
@@ -1866,11 +1870,12 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __BinaryOpFive
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPFIVE);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPFIVE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            jj_consume_token(ANDAND);
+            Token token = jj_consume_token(ANDAND);
+            jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.AndAnd));
         } finally {
             if (jjtc000) {
                 jjtree.closeNodeScope(jjtn000, true);
@@ -1882,18 +1887,20 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __BinaryOpFour
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPFOUR);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPFOUR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case NEQ: {
-                    jj_consume_token(NEQ);
+                    Token token = jj_consume_token(NEQ);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.NotEqual));
                     break;
                 }
                 case EQEQ: {
-                    jj_consume_token(EQEQ);
+                    Token token = jj_consume_token(EQEQ);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.EqualsEquals));
                     break;
                 }
                 default:
@@ -1912,26 +1919,30 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __BinaryOpThree
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPTHREE);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPTHREE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case GT: {
-                    jj_consume_token(GT);
+                    Token token = jj_consume_token(GT);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.GreaterThan));
                     break;
                 }
                 case LT: {
-                    jj_consume_token(LT);
+                    Token token = jj_consume_token(LT);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.LessThan));
                     break;
                 }
                 case LTE: {
-                    jj_consume_token(LTE);
+                    Token token = jj_consume_token(LTE);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.LessThanEqual));
                     break;
                 }
                 case GTE: {
-                    jj_consume_token(GTE);
+                    Token token = jj_consume_token(GTE);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.GreaterThanEqual));
                     break;
                 }
                 default:
@@ -1950,18 +1961,20 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __BinaryOpTwo
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPTWO);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPTWO);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case PLUS: {
-                    jj_consume_token(PLUS);
+                    Token token = jj_consume_token(PLUS);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Plus));
                     break;
                 }
                 case MINUS: {
-                    jj_consume_token(MINUS);
+                    Token token = jj_consume_token(MINUS);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Minus));
                     break;
                 }
                 default:
@@ -1980,22 +1993,25 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __BinaryOpOne
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__BINARYOPONE);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__BINARYOPONE);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case STAR: {
-                    jj_consume_token(STAR);
+                    Token token = jj_consume_token(STAR);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Star));
                     break;
                 }
                 case SLASH: {
-                    jj_consume_token(SLASH);
+                    Token token = jj_consume_token(SLASH);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Slash));
                     break;
                 }
                 case MOD: {
-                    jj_consume_token(MOD);
+                    Token token = jj_consume_token(MOD);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Modulo));
                     break;
                 }
                 default:
@@ -2014,22 +2030,25 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __UnaryOp
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__UNARYOP);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__UNARYOP);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case PLUS: {
-                    jj_consume_token(PLUS);
+                    Token token = jj_consume_token(PLUS);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Plus));
                     break;
                 }
                 case MINUS: {
-                    jj_consume_token(MINUS);
+                    Token token = jj_consume_token(MINUS);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Minus));
                     break;
                 }
                 case NOT: {
-                    jj_consume_token(NOT);
+                    Token token = jj_consume_token(NOT);
+                    jjtn000.jjtSetValue(new Operator(token.image, Operator.OperatorType.Not));
                     break;
                 }
                 default:
@@ -2047,7 +2066,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Primary
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARY);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARY);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2096,7 +2115,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __PrimaryReal
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARYREAL);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYREAL);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2166,7 +2185,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __NonNewArrayExpr
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__NONNEWARRAYEXPR);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__NONNEWARRAYEXPR);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2229,7 +2248,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Literal
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__LITERAL);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__LITERAL);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2237,27 +2256,27 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case NULL_LITERAL: {
                     Token literal = jj_consume_token(NULL_LITERAL);
-                    jjtn000.jjtSetValue(literal.image);
+                    jjtn000.jjtSetValue(new Literal(literal.image, new DataType(Token.ReturnType.Void, "", 0)));
                     break;
                 }
                 case BOOLEAN_LITERAL: {
                     Token literal = jj_consume_token(BOOLEAN_LITERAL);
-                    jjtn000.jjtSetValue(literal.image);
+                    jjtn000.jjtSetValue(new Literal(literal.image, new DataType(Token.ReturnType.Boolean, "", 0)));
                     break;
                 }
                 case INT_LITERAL: {
                     Token literal = jj_consume_token(INT_LITERAL);
-                    jjtn000.jjtSetValue(literal.image);
+                    jjtn000.jjtSetValue(new Literal(literal.image, new DataType(Token.ReturnType.Integer, "", 0)));
                     break;
                 }
                 case CHAR_LITERAL: {
                     Token literal = jj_consume_token(CHAR_LITERAL);
-                    jjtn000.jjtSetValue(literal.image);
+                    jjtn000.jjtSetValue(new Literal(literal.image, new DataType(Token.ReturnType.Character, "", 0)));
                     break;
                 }
                 case STRING_LITERAL: {
                     Token literal = jj_consume_token(STRING_LITERAL);
-                    jjtn000.jjtSetValue(literal.image);
+                    jjtn000.jjtSetValue(new Literal(literal.image, new DataType(Token.ReturnType.String, "", 0)));
                     break;
                 }
                 default:
@@ -2276,7 +2295,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __DimPlus_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__DIMPLUS_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__DIMPLUS_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2324,7 +2343,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __Dimension
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__DIMENSION);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__DIMENSION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2362,7 +2381,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __PrimaryId
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARYID);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2408,7 +2427,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __ActualArgs
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__ACTUALARGS);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__ACTUALARGS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2467,7 +2486,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __ExprList
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__EXPRLIST);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRLIST);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2517,7 +2536,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __PrimaryNew
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__PRIMARYNEW);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYNEW);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2576,7 +2595,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __ActualDim
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__ACTUALDIM);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__ACTUALDIM);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2626,7 +2645,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __DimPlus
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__DIMPLUS);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__DIMPLUS);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2663,7 +2682,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree ) __Member_p_p
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER_P_P);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__MEMBER_P_P);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2700,7 +2719,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __Member_p_pPreId
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__MEMBER_P_PPREID);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__MEMBER_P_PPREID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2760,7 +2779,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen(jjtree) __Field
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__FIELD);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__FIELD);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2797,7 +2816,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             throws ParseException {/*
                                     * @bgen( jjtree ) __MethodCtorCombo
                                     */
-        SimpleNode jjtn000 = new SimpleNode(JJT__METHODCTORCOMBO);
+        SophisticatedNode jjtn000 = new SophisticatedNode(JJT__METHODCTORCOMBO);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {

@@ -18,7 +18,9 @@ public class ParseResult
     
     public String getAST()
     {
-        return getNode(topNode,"");
+        Exp1Visitor visit = new PrintingVisitor();
+        ((SophisticatedNode)topNode).jjtAccept(visit, "");
+        return visit.toString();
     }
     
     public String getNode(Node toPrint, String tabs)
