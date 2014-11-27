@@ -13,10 +13,9 @@ public class SophisticatedNode extends SimpleNode
     
     public Object jjtAccept(Exp1Visitor visitor, Object data) {
         visitor.visit(this, data);
-        String tabLevelNew = jjtGetValue() != null? (String)data + " ": (String)data;
         if (children != null) {
             for (int i = 0; i < children.length; ++i) {
-                children[i].jjtAccept(visitor, tabLevelNew);
+                children[i].jjtAccept(visitor, data);
             }
         }
         return data;

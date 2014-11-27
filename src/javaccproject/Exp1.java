@@ -5,13 +5,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javaccproject.codegen.ClassDesc;
 import javaccproject.codegen.Literal;
+import javaccproject.codegen.MethodDesc;
 import javaccproject.codegen.Operator;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
 import javaccproject.tokens.FormalArgVarDeclToken;
 import javaccproject.tokens.IfToken;
+import javaccproject.tokens.MethodInvocationToken;
 import javaccproject.tokens.MethodToken;
 import javaccproject.tokens.Token;
 import javaccproject.tokens.VariableDeclToken;
@@ -160,7 +163,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             Token thisClass = new ClassToken(jj_consume_token(ID));
             symbolTable.setToken(thisClass);
             thisClass.containedIn = symbolTable;
-            jjtn000.jjtSetValue(thisClass.image);
+            jjtn000.jjtSetValue(new ClassDesc((ClassToken)thisClass));
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EXTENDS: {
@@ -390,7 +393,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
         }
     }
-    static final public void __MemberId(DataType memberType, Token idForMemberID, SymbolTable symbolTable)//TODO: do this
+    static final public void __MemberId(DataType memberType, Token idForMemberID, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __MemberId
                                     */
@@ -406,8 +409,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     if(memberType.type != null) method = new MethodToken(idForMemberID);
                     else method = new ConstructorMethodToken(idForMemberID);
                     ((MethodToken)method).myType = memberType;
-                    symbolTable.setToken(method);
                     method.containedIn = symbolTable;
+                    jjtn000.jjtSetValue(new MethodDesc((MethodToken)method));
                     __FormalArgs((MethodToken)method, method.myContext);//not done
                     __Block(method.myContext);
                     break;
@@ -479,6 +482,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 __FormalArgList(symbolTable);
             }
             jj_consume_token(RP);
+            methodToken.containedIn.setToken(symbolTable.tableOf);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -727,7 +731,11 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         jjtree.openNodeScope(jjtn000);
         try {
             Token var;
-            if(isFormal) var = new FormalArgVarDeclToken(jj_consume_token(ID), type);
+            if(isFormal)
+            {
+                var = new FormalArgVarDeclToken(jj_consume_token(ID), type);
+                ((MethodToken)symbolTable.tableOf).formalArgs.add((FormalArgVarDeclToken) var);
+            }
             else var = new VariableDeclToken(jj_consume_token(ID), type);
             symbolTable.setToken(var);
             var.containedIn = symbolTable;
@@ -2138,7 +2146,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                         //if not contained
                         throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
                     }
-                    __PrimaryId(symbolTable);
+                    __PrimaryId(currToken, symbolTable);
                     break;
                 }
                 case NEW: {
@@ -2377,7 +2385,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __PrimaryId(SymbolTable symbolTable)
+    static final public void __PrimaryId(Token preId, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __PrimaryId
                                     */
@@ -2385,17 +2393,24 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
+            Token thisThing = null;
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case LP: {
-                    __ActualArgs(symbolTable);
+                    //method invocation
+                    thisThing = new MethodInvocationToken(preId);//TODO: this
+                    __ActualArgs((MethodInvocationToken)thisThing, symbolTable);
                     break;
                 }
                 default:
                     jj_la1[40] = jj_gen;
                     ;
             }
-            __DimPlus_p(symbolTable);
+            //variable
+            Token var = new AccessToken(preId);
+            __DimPlus_p(thisThing, symbolTable);
+            //dimplus might add array accesses
+            //TODO: add this thing to AST
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2738,8 +2753,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     Token newMethod = new MethodToken(preId);
                     MethodToken methodTemp = (MethodToken)newMethod;
                     methodTemp.myType = type;
-                    symbolTable.setToken(newMethod);
                     newMethod.containedIn = symbolTable;
+                    jjtn000.jjtSetValue(new MethodDesc((MethodToken)newMethod));
                     __MethodCtorCombo(methodTemp, methodTemp.myContext);
                     break;
                 }
