@@ -4,10 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
+import javaccproject.codegen.Access;
+import javaccproject.codegen.ActualArgList;
+import javaccproject.codegen.ArrayAccessDimList;
 import javaccproject.codegen.ClassDesc;
 import javaccproject.codegen.Literal;
 import javaccproject.codegen.MethodDesc;
+import javaccproject.codegen.MethodInvocationArgList;
+import javaccproject.codegen.NewInstanceDesc;
 import javaccproject.codegen.Operator;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
@@ -2299,7 +2305,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __DimPlus_p(SymbolTable symbolTable)
+    static final public void __DimPlus_p(ArrayAccessDimList list, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __DimPlus_p
                                     */
@@ -2392,23 +2398,23 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
+        Token thisThing = new Access(preId);
+        jjtn000.jjtSetValue(thisThing);
         try {
-            Token thisThing = null;
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case LP: {
                     //method invocation
-                    thisThing = new MethodInvocationToken(preId);//TODO: this
-                    __ActualArgs((MethodInvocationToken)thisThing, symbolTable);
+                    MethodInvocationArgList args = new MethodInvocationArgList();//TODO: this
+                    __ActualArgs(args, symbolTable);
                     break;
                 }
                 default:
                     jj_la1[40] = jj_gen;
                     ;
             }
-            //variable
-            Token var = new AccessToken(preId);
-            __DimPlus_p(thisThing, symbolTable);
+            ArrayAccessDimList arr = new ArrayAccessDimList();
+            __DimPlus_p(arr, symbolTable);
             //dimplus might add array accesses
             //TODO: add this thing to AST
         } catch (Throwable jjte000) {
@@ -2438,11 +2444,12 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ActualArgs(SymbolTable symbolTable)
+    static final public void __ActualArgs(MethodInvocationArgList argList, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __ActualArgs
                                     */
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__ACTUALARGS);
+        jjtn000.jjtSetValue(new ActualArgList());
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
@@ -2470,6 +2477,11 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     ;
             }
             jj_consume_token(RP);
+            
+            for(Node childNode : jjtn000.children)
+            {
+                grabAccessToken(childNode, argList.actualArgs);
+            }
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2606,7 +2618,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __ActualDim(SymbolTable symbolTable)
+    static final public void __ActualDim(NewInstanceDesc desc, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __ActualDim
                                     */
@@ -2617,11 +2629,15 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case L_STRAIGHT_BRACKET: {
-                    __DimPlus(symbolTable);
+                    ArrayAccessDimList dimList = new ArrayAccessDimList();
+                    __DimPlus(dimList, symbolTable);
+                    desc.sizeIfArray = dimList;
                     break;
                 }
                 case LP: {
-                    __ActualArgs(symbolTable);
+                    MethodInvocationArgList argList = new MethodInvocationArgList();
+                    __ActualArgs(argList, symbolTable);
+                    desc.argsIfCtor = argList;
                     break;
                 }
                 default:
@@ -3793,5 +3809,15 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         int arg;
         JJCalls next;
     }
-
+    public static void grabAccessToken(Node parent, List<Access> tokens)
+    {
+        if(parent instanceof SimpleNode && ((SimpleNode)parent).jjtGetValue() != null && ((SimpleNode)parent).jjtGetValue() instanceof Access)
+        {
+            tokens.add((Access)((SimpleNode)parent).jjtGetValue());
+        }
+        for(int i = 0; i < parent.jjtGetNumChildren(); i++)
+        {
+            grabAccessToken(parent.jjtGetChild(i), tokens);
+        }
+    }
 }
