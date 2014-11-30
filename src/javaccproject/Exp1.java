@@ -15,12 +15,12 @@ import javaccproject.codegen.MethodDesc;
 import javaccproject.codegen.MethodInvocationArgList;
 import javaccproject.codegen.NewInstanceDesc;
 import javaccproject.codegen.Operator;
+import javaccproject.codegen.Access.AccessType;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
 import javaccproject.tokens.FormalArgVarDeclToken;
 import javaccproject.tokens.IfToken;
-import javaccproject.tokens.MethodInvocationToken;
 import javaccproject.tokens.MethodToken;
 import javaccproject.tokens.Token;
 import javaccproject.tokens.VariableDeclToken;
@@ -67,7 +67,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         } catch (java.io.FileNotFoundException e) {
             System.err.printf("File not found: %s\u005cn", args[0]);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -2203,6 +2202,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
+            ArrayAccessDimList dimList = new ArrayAccessDimList();
+            Access newAccess = new Access();
+            newAccess.arrayDims = dimList;
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case NULL_LITERAL:
@@ -2211,19 +2213,22 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case STRING_LITERAL:
                 case BOOLEAN_LITERAL: {
                     __Literal(symbolTable);
-                    __DimPlus_p(symbolTable);
+                    __DimPlus_p(dimList, symbolTable);
+                    newAccess.type = Access.AccessType.Literal;
                     break;
                 }
                 case THIS: {
                     jj_consume_token(THIS);
-                    __DimPlus_p(symbolTable);
+                    __DimPlus_p(dimList, symbolTable);
+                    newAccess.image = "this";
                     break;
                 }
                 case LP: {
                     jj_consume_token(LP);
                     __Expression(symbolTable);
                     jj_consume_token(RP);
-                    __DimPlus_p(symbolTable);
+                    __DimPlus_p(dimList, symbolTable);
+                    newAccess.type = Access.AccessType.Expression;
                     break;
                 }
                 default:
@@ -2324,7 +2329,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                         jj_la1[39] = jj_gen;
                         break label_11;
                 }
-                __Dimension(symbolTable);
+                __Dimension(list, symbolTable);
             }
         } catch (Throwable jjte000) {
             if (jjtc000) {
@@ -2353,7 +2358,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __Dimension(SymbolTable symbolTable)
+    static final public void __Dimension(ArrayAccessDimList list, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree ) __Dimension
                                     */
@@ -2364,6 +2369,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             jj_consume_token(L_STRAIGHT_BRACKET);
             __Expression(symbolTable);
             jj_consume_token(R_STRAIGHT_BRACKET);
+            list.arrayDims.add((SimpleNode)jjtn000.jjtGetChild(0));
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2398,15 +2404,18 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
-        Token thisThing = new Access(preId);
+        Access thisThing = new Access();
+        thisThing.image = preId.image;
         jjtn000.jjtSetValue(thisThing);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case LP: {
                     //method invocation
-                    MethodInvocationArgList args = new MethodInvocationArgList();//TODO: this
+                    MethodInvocationArgList args = new MethodInvocationArgList();
                     __ActualArgs(args, symbolTable);
+                    if(args.actualArgs != null && args.actualArgs.size() > 0)
+                        thisThing.methodCall = args;
                     break;
                 }
                 default:
@@ -2415,8 +2424,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
             ArrayAccessDimList arr = new ArrayAccessDimList();
             __DimPlus_p(arr, symbolTable);
+            if(arr.arrayDims != null && arr.arrayDims.size() > 0)
+                thisThing.arrayDims = arr;
             //dimplus might add array accesses
-            //TODO: add this thing to AST
+            jjtn000.jjtSetValue(thisThing);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2478,8 +2489,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             }
             jj_consume_token(RP);
             
-            for(Node childNode : jjtn000.children)
+            for(int i = 0; i < jjtn000.jjtGetNumChildren(); i++)
             {
+                Node childNode = jjtn000.jjtGetChild(i);
                 grabAccessToken(childNode, argList.actualArgs);
             }
         } catch (Throwable jjte000) {
@@ -2567,23 +2579,24 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
+            NewInstanceDesc newObject = new NewInstanceDesc();
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case ID: {
                     Token currToken = jj_consume_token(ID);
-                    if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
-                        //if not contained
-                        throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
-                    }
-                    __ActualDim(symbolTable);
+                    newObject.type = Token.ReturnType.Object;
+                    newObject.objectType = currToken.image;
+                    __ActualDim(newObject, symbolTable);
                     break;
                 }
                 case BOOLEAN:
                 case CHAR:
                 case INT:
                 case VOID: {
-                    __PrimitiveType(new DataType(), symbolTable);
-                    __DimPlus(symbolTable);
+                    DataType temp = new DataType();
+                    __PrimitiveType(temp, symbolTable);
+                    __DimPlus(newObject.sizeIfArray, symbolTable);
+                    newObject.type = temp.type;
                     break;
                 }
                 default:
@@ -2591,6 +2604,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                     jj_consume_token(-1);
                     throw new ParseException();
             }
+            jjtn000.jjtSetValue(newObject);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2672,7 +2686,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         }
     }
 
-    static final public void __DimPlus(SymbolTable symbolTable)
+    static final public void __DimPlus(ArrayAccessDimList list, SymbolTable symbolTable)
             throws ParseException {/*
                                     * @bgen(jjtree) __DimPlus
                                     */
@@ -2680,8 +2694,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
-            __Dimension(symbolTable);
-            __DimPlus_p(symbolTable);
+            __Dimension(list, symbolTable);
+            __DimPlus_p(list, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
