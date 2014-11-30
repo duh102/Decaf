@@ -1,5 +1,7 @@
 package javaccproject;
 
+import javaccproject.visitors.PrintingVisitor;
+
 public class ParseResult
 {
     public Node topNode;
@@ -25,12 +27,11 @@ public class ParseResult
     
     public String getNode(Node toPrint, String tabs)
     {
-        StringBuilder toReturn = toPrint instanceof SimpleNode?
-                new StringBuilder(String.format("%s%s:%s", tabs, toPrint, ((SimpleNode)toPrint).jjtGetValue()))
-                : new StringBuilder(String.format("%s%s", tabs, toPrint));
+        StringBuilder toReturn = new StringBuilder(String.format("%s%s", tabs, toPrint));
+
+        String newTabs = tabs+(toPrint instanceof SimpleNode && ((SimpleNode)toPrint).jjtGetValue()!= null? " ": "");
         if(toPrint.jjtGetNumChildren() > 0)
         {
-            String newTabs = tabs+' ';
             for(int i = 0; i < toPrint.jjtGetNumChildren(); i++)
             {
                 toReturn.append(String.format("\n%s", getNode(toPrint.jjtGetChild(i),newTabs)));

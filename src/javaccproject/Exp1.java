@@ -9,13 +9,19 @@ import java.util.List;
 import javaccproject.codegen.Access;
 import javaccproject.codegen.ActualArgList;
 import javaccproject.codegen.ArrayAccessDimList;
+import javaccproject.codegen.BlockDesc;
+import javaccproject.codegen.BreakDesc;
 import javaccproject.codegen.ClassDesc;
+import javaccproject.codegen.ContinueDesc;
+import javaccproject.codegen.ElseDesc;
+import javaccproject.codegen.IfDesc;
 import javaccproject.codegen.Literal;
 import javaccproject.codegen.MethodDesc;
 import javaccproject.codegen.MethodInvocationArgList;
 import javaccproject.codegen.NewInstanceDesc;
 import javaccproject.codegen.Operator;
-import javaccproject.codegen.Access.AccessType;
+import javaccproject.codegen.PrimaryListDesc;
+import javaccproject.codegen.ReturnDesc;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
@@ -744,6 +750,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             else var = new VariableDeclToken(jj_consume_token(ID), type);
             symbolTable.setToken(var);
             var.containedIn = symbolTable;
+            jjtn000.jjtSetValue(var);
             __Type_p(type, symbolTable);
         } catch (Throwable jjte000) {
             if (jjtc000) {
@@ -898,6 +905,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                             __Expression(ifStart.myContext);
                                             jj_consume_token(RP);
                                             __Statement(ifStart.myContext);
+                                            IfDesc newIf = new IfDesc();
+                                            jjtn000.jjtSetValue(newIf);
                                             switch ((jj_ntk == -1) ? jj_ntk_f()
                                                     : jj_ntk)
                                             {
@@ -906,6 +915,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                                     symbolTable.setToken(elseToken);
                                                     elseToken.containedIn = symbolTable;
                                                     __Statement(elseToken.myContext);
+                                                    newIf.ifElse = new ElseDesc();
                                                     break;
                                                 }
                                                 default:
@@ -926,6 +936,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                         }
                                         case RETURN: {
                                             jj_consume_token(RETURN);
+                                            jjtn000.jjtSetValue(new ReturnDesc());
                                             switch ((jj_ntk == -1) ? jj_ntk_f()
                                                     : jj_ntk)
                                             {
@@ -955,15 +966,18 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                         case CONTINUE: {
                                             jj_consume_token(CONTINUE);
                                             jj_consume_token(SEMICOLON);
+                                            jjtn000.jjtSetValue(new ContinueDesc());
                                             break;
                                         }
                                         case BREAK: {
                                             jj_consume_token(BREAK);
                                             jj_consume_token(SEMICOLON);
+                                            jjtn000.jjtSetValue(new BreakDesc());
                                             break;
                                         }
                                         case L_CURL_BRACKET: {
                                             __Block(symbolTable);
+                                            jjtn000.jjtSetValue(new BlockDesc());
                                             break;
                                         }
                                         default:
@@ -2083,6 +2097,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
         try {
+            jjtn000.jjtSetValue(new PrimaryListDesc());
             __PrimaryReal(symbolTable);
             label_10: while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)

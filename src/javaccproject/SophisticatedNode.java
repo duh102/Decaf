@@ -25,7 +25,7 @@ public class SophisticatedNode extends SimpleNode
     {
         if(jjtGetValue() != null)
         {
-            return String.format("%s:%s\n", Exp1TreeConstants.jjtNodeName[id], jjtGetValue());
+            return String.format("%s:%s", Exp1TreeConstants.jjtNodeName[id], jjtGetValue());
         }
         else return "";
     }
