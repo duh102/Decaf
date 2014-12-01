@@ -1171,6 +1171,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             __Type_p(typeOfThisVar, symbolTable);
             Token varDecl = new VariableDeclToken(preId, typeOfThisVar);
             symbolTable.setToken(varDecl);
+            jjtn000.jjtSetValue(varDecl);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EQ: {

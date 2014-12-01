@@ -29,5 +29,14 @@ public class SophisticatedNode extends SimpleNode
         }
         else return "";
     }
+    public String toString(boolean valueOnly)
+    {
+       return valueOnly? (jjtGetValue() != null? jjtGetValue().toString():"") : toString();
+    }
+    
+    public String toString(String prefix)
+    {
+       return String.format("%s%s", prefix, toString(true));
+    }
 
 }
