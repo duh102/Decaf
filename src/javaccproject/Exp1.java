@@ -2384,7 +2384,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             jj_consume_token(L_STRAIGHT_BRACKET);
             __Expression(symbolTable);
             jj_consume_token(R_STRAIGHT_BRACKET);
-            list.arrayDims.add((SimpleNode)jjtn000.jjtGetChild(0));
+            list.arrayDims.add(jjtn000);
         } catch (Throwable jjte000) {
             if (jjtc000) {
                 jjtree.clearNodeScope(jjtn000);
@@ -2610,8 +2610,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case VOID: {
                     DataType temp = new DataType();
                     __PrimitiveType(temp, symbolTable);
-                    __DimPlus(newObject.sizeIfArray, symbolTable);
+                    ArrayAccessDimList list = new ArrayAccessDimList();
+                    __DimPlus(list, symbolTable);
                     newObject.type = temp.type;
+                    newObject.sizeIfArray = list.arrayDims.size() >0? list: null;
                     break;
                 }
                 default:

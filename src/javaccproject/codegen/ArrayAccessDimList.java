@@ -6,7 +6,7 @@ import javaccproject.SimpleNode;
 
 public class ArrayAccessDimList
 {
-    public ArrayList<SimpleNode> arrayDims;
+    public ArrayList<SimpleNode> arrayDims = new ArrayList<SimpleNode>();
     
     public String toString()
     {
@@ -14,7 +14,7 @@ public class ArrayAccessDimList
         if(arrayDims.size() > 0)
         {
             str.append("["+ arrayDims.get(0));
-            for(int i = 0; i < arrayDims.size(); i++)
+            for(int i = 1; i < arrayDims.size(); i++)
             {
                 str.append("]["+arrayDims.get(i));
             }
