@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-
 import javaccproject.codegen.Access;
 import javaccproject.codegen.ActualArgList;
 import javaccproject.codegen.ArrayAccessDimList;
@@ -27,6 +26,7 @@ import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
 import javaccproject.tokens.FormalArgVarDeclToken;
 import javaccproject.tokens.IfToken;
+import javaccproject.tokens.MemberToken;
 import javaccproject.tokens.MethodToken;
 import javaccproject.tokens.Token;
 import javaccproject.tokens.VariableDeclToken;
@@ -66,6 +66,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 }
             }
             ParseResult result = parse(file);
+            result.depthFirstCheck();
             System.out.printf("Parsing successful, results:\n%s", result);
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
@@ -417,8 +418,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case LP: {
                     //idForMemberID is the id of some method
                     Token method;
-                    if(memberType.type != null) method = new MethodToken(idForMemberID);
-                    else method = new ConstructorMethodToken(idForMemberID);
+                    if(memberType.type != null) method = new MethodToken(idForMemberID, false);
+                    else method = new ConstructorMethodToken(idForMemberID, false);
                     ((MethodToken)method).myType = memberType;
                     method.containedIn = symbolTable;
                     jjtn000.jjtSetValue(new MethodDesc((MethodToken)method));
@@ -744,10 +745,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             Token var;
             if(isFormal)
             {
-                var = new FormalArgVarDeclToken(jj_consume_token(ID), type);
+                var = new FormalArgVarDeclToken(jj_consume_token(ID), type, false);
                 ((MethodToken)symbolTable.tableOf).formalArgs.add((FormalArgVarDeclToken) var);
             }
-            else var = new VariableDeclToken(jj_consume_token(ID), type);
+            else var = new VariableDeclToken(jj_consume_token(ID), type, false);
             symbolTable.setToken(var);
             var.containedIn = symbolTable;
             jjtn000.jjtSetValue(var);
@@ -1169,7 +1170,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         try {
             DataType typeOfThisVar = new DataType(type);
             __Type_p(typeOfThisVar, symbolTable);
-            Token varDecl = new VariableDeclToken(preId, typeOfThisVar);
+            Token varDecl = new VariableDeclToken(preId, typeOfThisVar, false);
             symbolTable.setToken(varDecl);
             jjtn000.jjtSetValue(varDecl);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
@@ -2163,10 +2164,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case ID: {       
                     //check if token is in symbol table, if not add it.
                     Token currToken = jj_consume_token(ID);
-                    if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
-                        //if not contained
-                        throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
-                    }
+                    //if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
+                    //    //if not contained
+                    //    throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
+                    //}
                     __PrimaryId(currToken, symbolTable);
                     break;
                 }
@@ -2420,8 +2421,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
+        Token varDecl = new MemberToken(preId, true);
         Access thisThing = new Access();
-        thisThing.image = preId.image;
+        thisThing.token = varDecl;
+        thisThing.image = varDecl.image;
         jjtn000.jjtSetValue(thisThing);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
@@ -2798,7 +2801,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 }
                 case LP: {
                     //preId was the name of a method
-                    Token newMethod = new MethodToken(preId);
+                    Token newMethod = new MethodToken(preId, false);
                     MethodToken methodTemp = (MethodToken)newMethod;
                     methodTemp.myType = type;
                     newMethod.containedIn = symbolTable;
