@@ -6,9 +6,9 @@ public class ConstructorMethodToken extends MethodToken
      * 
      */
     private static final long serialVersionUID = -5673087674427976975L;
-    public ConstructorMethodToken(Token myToken)
+    public ConstructorMethodToken(Token myToken, boolean checkOnSecondPass)
     {
-        super(myToken);
+        super(myToken, checkOnSecondPass);
     }
     public String toString() {
         return String.format("constructor %s %s(%s)", myType.accessModifier, image, args());
