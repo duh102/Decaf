@@ -18,7 +18,9 @@ public class SophisticatedNode extends SimpleNode
     
     @Override
     public Object jjtAccept(Exp1Visitor visitor, Object data) {
-        if (visitor instanceof javaccproject.CheckSTVisitor) {
+        if(visitor instanceof CodeGenVisitor){
+            visitor.visit(this, data);
+        } else if (visitor instanceof javaccproject.CheckSTVisitor) {
             //if checking variables    
             visitor.visit(this, data);
             if(children != null){
