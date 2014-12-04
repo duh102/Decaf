@@ -31,6 +31,12 @@ public class ParseResult
         ((SophisticatedNode)topNode).jjtAccept(visitor, current);        
     }
     
+    public String generateCode(){
+        Exp1Visitor visitor = new CodeGenVisitor();
+        ((SophisticatedNode)topNode).jjtAccept(visitor, ""); 
+        return visitor.toString();
+    }
+    
     public String getNode(Node toPrint, String tabs)
     {
         StringBuilder toReturn = new StringBuilder(String.format("%s%s", tabs, toPrint));
