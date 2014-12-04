@@ -44,6 +44,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
     public static void main(String[] args) {
         try {
             String file = "";
+            args = new String[1];
+            args[0] = "C:\\DecafTests\\averyTest.decaf";
             if (args.length == 0 || args[0].length() == 0) {
                 // stdin, not implemented
                 System.err.println("Reading from stdin not implemented");
@@ -68,6 +70,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             ParseResult result = parse(file);
             result.depthFirstCheck();
             System.out.printf("Parsing successful, results:\n%s", result);
+            System.out.println("\n\n--BEGIN CODE GENERATION--\n\n");
+            System.out.println(result.generateCode());
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
             System.err.println("Syntax check failed: " + e.getMessage());
