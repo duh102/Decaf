@@ -21,6 +21,7 @@ import javaccproject.codegen.NewInstanceDesc;
 import javaccproject.codegen.Operator;
 import javaccproject.codegen.PrimaryListDesc;
 import javaccproject.codegen.ReturnDesc;
+import javaccproject.codegen.WhileDesc;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
@@ -101,15 +102,15 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
      */
     
     //recursive checking symbol tables
-    private static boolean checkRecursiveSymbolTables(SymbolTable symbolTable, String tokenToCheck){
+    /*private static boolean checkRecursiveSymbolTables(SymbolTable symbolTable, String tokenToCheck){
         return true;
-        /*if (symbolTable == null) return false;
+        if (symbolTable == null) return false;
         if(symbolTable.getToken(tokenToCheck) == null){
             return (symbolTable.tableOf == null) ? false :
                     checkRecursiveSymbolTables(symbolTable.tableOf.containedIn, tokenToCheck);
         }
-        return true;*/
-    }
+        return true;
+    }*/
     
     final public void __Start(SymbolTable symbolTable) throws ParseException {/*
                                                                                * @
@@ -937,6 +938,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                             __Expression(whileToken.myContext);
                                             jj_consume_token(RP);
                                             __Statement(whileToken.myContext);
+                                            WhileDesc newWhile = new WhileDesc();
+                                            jjtn000.jjtSetValue(newWhile);
                                             break;
                                         }
                                         case RETURN: {
@@ -1181,6 +1184,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             {
                 case EQ: {
                     jj_consume_token(EQ);
+                    ((VariableDeclToken)varDecl).assignment = new Token();
                     __Expression(symbolTable);
                     break;
                 }
@@ -1222,6 +1226,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
+        ExpressionDesc exN = new ExpressionDesc(jjtn000);
+        jjtn000.jjtSetValue(exN);
         try {
             __Expression_p(symbolTable);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
