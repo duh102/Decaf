@@ -12,13 +12,16 @@ public class MemberToken extends Token
 
     public Token parent = null;
     public DataType myType = null;
+    public boolean checkOnSecondPass;
     
-    public MemberToken(Token toCopy) {
+    public MemberToken(Token toCopy, boolean checkOnSecondPass) {
         super(toCopy);
+        this.checkOnSecondPass = checkOnSecondPass;
         if(toCopy instanceof MemberToken) {
             MemberToken toCopyFrom = (MemberToken)toCopy;
             this.parent = toCopyFrom.parent;
             this.myType = toCopyFrom.myType;
+            this.checkOnSecondPass = checkOnSecondPass;
         }
     }
     

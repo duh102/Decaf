@@ -1,11 +1,11 @@
 package javaccproject;
 
+import javaccproject.codegen.ExpressionDesc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-
 import javaccproject.codegen.Access;
 import javaccproject.codegen.ActualArgList;
 import javaccproject.codegen.ArrayAccessDimList;
@@ -22,11 +22,13 @@ import javaccproject.codegen.NewInstanceDesc;
 import javaccproject.codegen.Operator;
 import javaccproject.codegen.PrimaryListDesc;
 import javaccproject.codegen.ReturnDesc;
+import javaccproject.codegen.WhileDesc;
 import javaccproject.tokens.ClassToken;
 import javaccproject.tokens.ConstructorMethodToken;
 import javaccproject.tokens.ElseToken;
 import javaccproject.tokens.FormalArgVarDeclToken;
 import javaccproject.tokens.IfToken;
+import javaccproject.tokens.MemberToken;
 import javaccproject.tokens.MethodToken;
 import javaccproject.tokens.Token;
 import javaccproject.tokens.VariableDeclToken;
@@ -44,6 +46,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
     public static void main(String[] args) {
         try {
             String file = "";
+            args = new String[1];
+            args[0] = "C:\\DecafTests\\averyTest.decaf";
             if (args.length == 0 || args[0].length() == 0) {
                 // stdin, not implemented
                 System.err.println("Reading from stdin not implemented");
@@ -66,7 +70,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 }
             }
             ParseResult result = parse(file);
+            result.depthFirstCheck();
             System.out.printf("Parsing successful, results:\n%s", result);
+            System.out.println("\n\n--BEGIN CODE GENERATION--\n\n");
+            System.out.println(result.generateCode());
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
             System.err.println("Syntax check failed: " + e.getMessage());
@@ -96,15 +103,15 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
      */
     
     //recursive checking symbol tables
-    private static boolean checkRecursiveSymbolTables(SymbolTable symbolTable, String tokenToCheck){
+    /*private static boolean checkRecursiveSymbolTables(SymbolTable symbolTable, String tokenToCheck){
         return true;
-        /*if (symbolTable == null) return false;
+        if (symbolTable == null) return false;
         if(symbolTable.getToken(tokenToCheck) == null){
             return (symbolTable.tableOf == null) ? false :
                     checkRecursiveSymbolTables(symbolTable.tableOf.containedIn, tokenToCheck);
         }
-        return true;*/
-    }
+        return true;
+    }*/
     
     final public void __Start(SymbolTable symbolTable) throws ParseException {/*
                                                                                * @
@@ -417,8 +424,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case LP: {
                     //idForMemberID is the id of some method
                     Token method;
-                    if(memberType.type != null) method = new MethodToken(idForMemberID);
-                    else method = new ConstructorMethodToken(idForMemberID);
+                    if(memberType.type != null) method = new MethodToken(idForMemberID, false);
+                    else method = new ConstructorMethodToken(idForMemberID, false);
                     ((MethodToken)method).myType = memberType;
                     method.containedIn = symbolTable;
                     jjtn000.jjtSetValue(new MethodDesc((MethodToken)method));
@@ -744,10 +751,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             Token var;
             if(isFormal)
             {
-                var = new FormalArgVarDeclToken(jj_consume_token(ID), type);
+                var = new FormalArgVarDeclToken(jj_consume_token(ID), type, false);
                 ((MethodToken)symbolTable.tableOf).formalArgs.add((FormalArgVarDeclToken) var);
             }
-            else var = new VariableDeclToken(jj_consume_token(ID), type);
+            else var = new VariableDeclToken(jj_consume_token(ID), type, false);
             symbolTable.setToken(var);
             var.containedIn = symbolTable;
             jjtn000.jjtSetValue(var);
@@ -932,6 +939,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                                             __Expression(whileToken.myContext);
                                             jj_consume_token(RP);
                                             __Statement(whileToken.myContext);
+                                            WhileDesc newWhile = new WhileDesc();
+                                            jjtn000.jjtSetValue(newWhile);
                                             break;
                                         }
                                         case RETURN: {
@@ -1169,13 +1178,14 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         try {
             DataType typeOfThisVar = new DataType(type);
             __Type_p(typeOfThisVar, symbolTable);
-            Token varDecl = new VariableDeclToken(preId, typeOfThisVar);
+            Token varDecl = new VariableDeclToken(preId, typeOfThisVar, false);
             symbolTable.setToken(varDecl);
             jjtn000.jjtSetValue(varDecl);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
             {
                 case EQ: {
                     jj_consume_token(EQ);
+                    ((VariableDeclToken)varDecl).assignment = new Token();
                     __Expression(symbolTable);
                     break;
                 }
@@ -1217,6 +1227,8 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__EXPRESSION);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
+        ExpressionDesc exN = new ExpressionDesc(jjtn000);
+        jjtn000.jjtSetValue(exN);
         try {
             __Expression_p(symbolTable);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
@@ -2163,10 +2175,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 case ID: {       
                     //check if token is in symbol table, if not add it.
                     Token currToken = jj_consume_token(ID);
-                    if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
-                        //if not contained
-                        throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
-                    }
+                    //if (!checkRecursiveSymbolTables(symbolTable, currToken.toString())){
+                    //    //if not contained
+                    //    throw new ParseException(String.format("Error at %s: Variable used before declaration", token.parseExcept()));
+                    //}
                     __PrimaryId(currToken, symbolTable);
                     break;
                 }
@@ -2420,8 +2432,10 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         SophisticatedNode jjtn000 = new SophisticatedNode(JJT__PRIMARYID);
         boolean jjtc000 = true;
         jjtree.openNodeScope(jjtn000);
+        Token varDecl = new MemberToken(preId, true);
         Access thisThing = new Access();
-        thisThing.image = preId.image;
+        thisThing.token = varDecl;
+        thisThing.image = varDecl.image;
         jjtn000.jjtSetValue(thisThing);
         try {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk)
@@ -2798,7 +2812,7 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 }
                 case LP: {
                     //preId was the name of a method
-                    Token newMethod = new MethodToken(preId);
+                    Token newMethod = new MethodToken(preId, false);
                     MethodToken methodTemp = (MethodToken)newMethod;
                     methodTemp.myType = type;
                     newMethod.containedIn = symbolTable;

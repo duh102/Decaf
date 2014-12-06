@@ -25,6 +25,18 @@ public class ParseResult
         return visit.toString();
     }
     
+    public void depthFirstCheck(){
+        Exp1Visitor visitor = new CheckSTVisitor();
+        leftToRightScope current = new leftToRightScope(table);   
+        ((SophisticatedNode)topNode).jjtAccept(visitor, current);        
+    }
+    
+    public String generateCode(){
+        Exp1Visitor visitor = new CodeGenVisitor();
+        ((SophisticatedNode)topNode).jjtAccept(visitor, ""); 
+        return visitor.toString();
+    }
+    
     public String getNode(Node toPrint, String tabs)
     {
         StringBuilder toReturn = new StringBuilder(String.format("%s%s", tabs, toPrint));

@@ -1,16 +1,18 @@
 package javaccproject.codegen;
 
+import javaccproject.tokens.Token;
+
 public class Access
 {
     public ArrayAccessDimList arrayDims = null;
     public MethodInvocationArgList methodCall = null;
+    public Token token;
     public String image;//if image is not null, access is accessing of some variable/class
     //if it is null, check the following enum
     //special case: this, image is set to "this"
     public AccessType type = AccessType.Variable;
     
     public enum AccessType {Variable, Literal, Expression};
-    
     
     public String toString()
     {

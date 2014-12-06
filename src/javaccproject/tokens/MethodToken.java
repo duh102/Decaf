@@ -14,8 +14,8 @@ public class MethodToken extends MemberToken
     
     public ArrayList<FormalArgVarDeclToken> formalArgs = new ArrayList<FormalArgVarDeclToken>();
     
-    public MethodToken(Token myToken) {
-        super(myToken);
+    public MethodToken(Token myToken, boolean checkOnSecondPass) {
+        super(myToken, checkOnSecondPass);
         myContext = new SymbolTable();
         myContext.tableOf = this;
     }
