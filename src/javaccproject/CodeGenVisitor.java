@@ -1,5 +1,6 @@
 package javaccproject;
 
+import javaccproject.codegen.ExpressionDesc;
 import java.util.ArrayList;
 import java.util.Stack;
 import javaccproject.codegen.Access;
