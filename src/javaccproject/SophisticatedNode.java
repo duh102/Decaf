@@ -4,6 +4,7 @@ import javaccproject.codegen.Access;
 import javaccproject.codegen.ClassDesc;
 import javaccproject.codegen.MethodDesc;
 import javaccproject.tokens.Token;
+import javaccproject.visitors.CodeGenVisitor;
 
 public class SophisticatedNode extends SimpleNode
 {
@@ -20,7 +21,7 @@ public class SophisticatedNode extends SimpleNode
     public Object jjtAccept(Exp1Visitor visitor, Object data) {
         if(visitor instanceof CodeGenVisitor){
             visitor.visit(this, data);
-        } else if (visitor instanceof javaccproject.CheckSTVisitor) {
+        } else if (visitor instanceof javaccproject.visitors.CheckSTVisitor) {
             //if checking variables    
             visitor.visit(this, data);
             if(children != null){
@@ -70,8 +71,8 @@ public class SophisticatedNode extends SimpleNode
         {
             return String.format("%s:%s", Exp1TreeConstants.jjtNodeName[id], jjtGetValue().toString());
         }
-        //else return "";
-        else return String.format("%s:%s", Exp1TreeConstants.jjtNodeName[id], jjtGetValue());
+        else return "";
+        //else return String.format("%s:%s", Exp1TreeConstants.jjtNodeName[id], jjtGetValue());
     }
     
     public String toString(boolean valueOnly)

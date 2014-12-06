@@ -21,7 +21,7 @@ import javaccproject.tokens.Token;
 public class SymbolTable
 {
     public Token tableOf = null;
-    HashMap<String, Token> table = new HashMap<String, Token>();
+    public HashMap<String, Token> table = new HashMap<String, Token>();
 
     void setToken(Token t) throws ParseException {
         if (table.containsKey(t.symbolTableKey())) {

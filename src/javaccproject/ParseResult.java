@@ -1,5 +1,7 @@
 package javaccproject;
 
+import javaccproject.visitors.CheckSTVisitor;
+import javaccproject.visitors.CodeGenVisitor;
 import javaccproject.visitors.PrintingVisitor;
 
 public class ParseResult

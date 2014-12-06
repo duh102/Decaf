@@ -1,8 +1,14 @@
-package javaccproject;
+package javaccproject.visitors;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javaccproject.Exp1Visitor;
+import javaccproject.ParseException;
+import javaccproject.SimpleNode;
+import javaccproject.SymbolTable;
+import javaccproject.leftToRightScope;
 import javaccproject.codegen.Access;
 import javaccproject.codegen.ClassDesc;
 import javaccproject.tokens.*;

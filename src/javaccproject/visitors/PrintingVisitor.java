@@ -8,7 +8,7 @@ public class PrintingVisitor implements Exp1Visitor
     StringBuilder result = new StringBuilder();
     @Override
     public Object visit(SimpleNode node, Object data) {        
-        //if(node.jjtGetValue() != null)
+        if(node.jjtGetValue() != null)
         {
             int parentCount = countParents(node);
             char[] tabLevel = new char[parentCount*3];
