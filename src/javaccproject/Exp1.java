@@ -1,11 +1,13 @@
 package javaccproject;
 
 import javaccproject.codegen.ExpressionDesc;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
+
 import javaccproject.codegen.Access;
 import javaccproject.codegen.ActualArgList;
 import javaccproject.codegen.ArrayAccessDimList;
@@ -85,9 +87,85 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             e.printStackTrace();
         }
     }
+    
+    private static void setupDefaults(SymbolTable table)
+    {
+        try {
+            Token io = new ClassToken(new Token(ID, "IO"));
+            table.setToken(io);
+            io.containedIn = table;
+            SymbolTable ioTable = io.myContext;
+            Token getChar = new MethodToken(new Token(ID, "getChar"), false);
+            Token getInt = new MethodToken(new Token(ID, "getInt"), false);
+            Token getLine = new MethodToken(new Token(ID, "getLine"), false);
+            Token peek = new MethodToken(new Token(ID, "peek"), false);
+            Token ungetChar = new MethodToken(new Token(ID, "ungetChar"), false);
+            Token putChar = new MethodToken(new Token(ID, "putChar"), false);
+            Token putInt = new MethodToken(new Token(ID, "putInt"), false);
+            Token putString = new MethodToken(new Token(ID, "putString"), false);
+            
+            getChar.containedIn = ioTable;
+            getInt.containedIn = ioTable;
+            getLine.containedIn = ioTable;
+            peek.containedIn = ioTable;
+            ungetChar.containedIn = ioTable;
+            putChar.containedIn = ioTable;
+            putInt.containedIn = ioTable;
+            putString.containedIn = ioTable;
+            
+            ioTable.setToken(getChar);
+            ioTable.setToken(getInt);
+            ioTable.setToken(getLine);
+            ioTable.setToken(peek);
+            ioTable.setToken(ungetChar);
+            ioTable.setToken(putChar);
+            ioTable.setToken(putInt);
+            ioTable.setToken(putString);
+            
+            DataType publicStaticInt = new DataType(Token.ReturnType.Integer, null, 0);
+            publicStaticInt.accessModifier = Token.AccessModifier.Public;
+            publicStaticInt.isStatic = true;
+            
+            DataType publicStaticString = new DataType(publicStaticInt);
+            publicStaticString.type = Token.ReturnType.String;
+            
+            DataType publicStaticVoid = new DataType(publicStaticInt);
+            publicStaticVoid.type = Token.ReturnType.Void;
+            
+            DataType publicStaticBoolean = new DataType(publicStaticInt);
+            publicStaticBoolean.type = Token.ReturnType.Boolean;
+            
+            ((MethodToken)getChar).myType = new DataType(publicStaticInt);
+            ((MethodToken)getInt).myType = new DataType(publicStaticInt);
+            ((MethodToken)getLine).myType = new DataType(publicStaticString);
+            ((MethodToken)peek).myType = new DataType(publicStaticInt);
+            ((MethodToken)ungetChar).myType = new DataType(publicStaticBoolean);
+            ((MethodToken)putChar).myType = new DataType(publicStaticVoid);
+            ((MethodToken)putInt).myType = new DataType(publicStaticVoid);
+            ((MethodToken)putString).myType = new DataType(publicStaticVoid);
+            
+            FormalArgVarDeclToken intC = new FormalArgVarDeclToken(new Token(ID, "c"), new DataType(Token.ReturnType.Integer, null, 0), false);
+            ((MethodToken)ungetChar).formalArgs.add(intC);
+            
+            FormalArgVarDeclToken charC = new FormalArgVarDeclToken(new Token(ID, "c"), new DataType(Token.ReturnType.Character, null, 0), false);
+            ((MethodToken)putChar).formalArgs.add(charC);
+            
+            FormalArgVarDeclToken intI = new FormalArgVarDeclToken(new Token(ID, "i"), new DataType(Token.ReturnType.Integer, null, 0), false);
+            ((MethodToken)putInt).formalArgs.add(intI);
+            
+            FormalArgVarDeclToken stringS = new FormalArgVarDeclToken(new Token(ID, "s"), new DataType(Token.ReturnType.String, null, 0), false);
+            ((MethodToken)putString).formalArgs.add(stringS);
+        }
+        catch (ParseException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     public static ParseResult parse(String toParse) throws ParseException {
         SymbolTable symbolTable = new SymbolTable();
+        setupDefaults(symbolTable);
         try {
             new Exp1(new StringReader(toParse)).__Start(symbolTable);
             // debug: System.out.println("Syntax is okay");
