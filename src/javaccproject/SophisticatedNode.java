@@ -68,10 +68,10 @@ public class SophisticatedNode extends SimpleNode
         if(jjtGetValue() != null && !(jjtGetValue() instanceof javaccproject.codegen.Operator) 
                 && !(jjtGetValue() instanceof javaccproject.codegen.Literal))
         {
-            return String.format("%s:%s\n", Exp1TreeConstants.jjtNodeName[id], ((Token)jjtGetValue()).image());
+            return String.format("%s:%s", Exp1TreeConstants.jjtNodeName[id], jjtGetValue().toString());
         }
         //else return "";
-        else return String.format("%s:%s\n", Exp1TreeConstants.jjtNodeName[id], "");
+        else return String.format("%s:%s", Exp1TreeConstants.jjtNodeName[id], jjtGetValue());
     }
     
     public String toString(boolean valueOnly)
@@ -81,7 +81,7 @@ public class SophisticatedNode extends SimpleNode
     
     public String toString(String prefix)
     {
-       return String.format("%s%s", prefix, toString(true));
+       return String.format("%s%s", prefix, toString(false));
     }
 
 }
