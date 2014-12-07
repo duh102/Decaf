@@ -4,7 +4,6 @@ import javaccproject.codegen.Access;
 import javaccproject.codegen.ClassDesc;
 import javaccproject.codegen.MethodDesc;
 import javaccproject.tokens.Token;
-import javaccproject.visitors.CodeGenVisitor;
 
 public class SophisticatedNode extends SimpleNode
 {

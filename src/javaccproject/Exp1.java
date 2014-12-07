@@ -87,8 +87,21 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             e.printStackTrace();
         }
     }
+
+    public static ParseResult parse(String toParse) throws ParseException {
+        SymbolTable symbolTable = new SymbolTable();
+        setupDefaults(symbolTable);
+        try {
+            new Exp1(new StringReader(toParse)).__Start(symbolTable);
+            // debug: System.out.println("Syntax is okay");
+            return new ParseResult(symbolTable, jjtree.rootNode());
+        } catch (ParseException e) {
+            // Catching Throwable is ugly but JavaCC throws Error objects!
+            throw e;
+        }
+    }
     
-    private static void setupDefaults(SymbolTable table)
+     private static void setupDefaults(SymbolTable table)
     {
         try {
             Token io = new ClassToken(new Token(ID, "IO"));
@@ -160,19 +173,6 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-    }
-
-    public static ParseResult parse(String toParse) throws ParseException {
-        SymbolTable symbolTable = new SymbolTable();
-        setupDefaults(symbolTable);
-        try {
-            new Exp1(new StringReader(toParse)).__Start(symbolTable);
-            // debug: System.out.println("Syntax is okay");
-            return new ParseResult(symbolTable, jjtree.rootNode());
-        } catch (ParseException e) {
-            // Catching Throwable is ugly but JavaCC throws Error objects!
-            throw e;
         }
     }
 
@@ -834,7 +834,9 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
                 var = new FormalArgVarDeclToken(jj_consume_token(ID), type, false);
                 ((MethodToken)symbolTable.tableOf).formalArgs.add((FormalArgVarDeclToken) var);
             }
-            else var = new VariableDeclToken(jj_consume_token(ID), type, false);
+            else {
+                var = new VariableDeclToken(jj_consume_token(ID), type, false);
+            }
             symbolTable.setToken(var);
             var.containedIn = symbolTable;
             jjtn000.jjtSetValue(var);

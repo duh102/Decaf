@@ -10,6 +10,7 @@ public class SimpleNode implements Node
     protected int id;
     protected Object value = null;
     protected Exp1 parser;
+    boolean visitedForCodeGen=false;
 
     public SimpleNode(int i) {
         id = i;
