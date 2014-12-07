@@ -1,13 +1,17 @@
 package javaccproject;
 
-import javaccproject.codegen.ExpressionDesc;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 import javaccproject.codegen.Access;
 import javaccproject.codegen.BlockDesc;
 import javaccproject.codegen.BreakDesc;
 import javaccproject.codegen.ClassDesc;
 import javaccproject.codegen.ContinueDesc;
+import javaccproject.codegen.ExpressionDesc;
 import javaccproject.codegen.IfDesc;
 import javaccproject.codegen.Literal;
 import javaccproject.codegen.MethodDesc;
@@ -30,7 +34,7 @@ public class CodeGenVisitor implements Exp1Visitor
     int labelCount = 0;
     static Stack<String> currentTopLabel = new Stack<>();
     static Stack<String> currentExitLabel = new Stack<>();
-    static ArrayList<String> variablesToLocalNumber = new ArrayList<>();
+    static ArrayList<String> currentLocalVariables = new ArrayList<>();
     static boolean insideMethod = false;
     static String initializationMethodBegin = "";
     static String initializationMethodMiddle = "";
@@ -38,18 +42,27 @@ public class CodeGenVisitor implements Exp1Visitor
                                             "invokenonvirtual java/lang/Object/<init>()V \n" +
                                             "return \n" +
                                             ".end method \n";
-    static boolean firstMethodDone = false;
     static String allFields = "";
+    static boolean skipNextExp = false;
+    static SymbolTable rootST;
+    static SymbolTable thisSymbolTable;
     @Override
     public Object visit(SimpleNode node, Object o){
         resultFile = generateCode(node);
         return null;
     }    
     //generates code for this node and all children nodes
-    public String generateCode(SimpleNode node){     
+    public String generateCode(SimpleNode node){ 
+        if(node.visitedForCodeGen){
+            return "";
+        }else{
+            node.visitedForCodeGen = true;
+        }
         //generate code through depth first search
         //if it's a class
         if(node.value instanceof ClassDesc){
+            rootST = ((ClassDesc)node.value).token.containedIn;
+            thisSymbolTable = ((ClassDesc)node.value).token.myContext;
             //does it have a super class?
             //default is object
             String superString = ".super java/lang/Object";
@@ -72,7 +85,7 @@ public class CodeGenVisitor implements Exp1Visitor
             String accessModifier = ((MemberToken)((MethodDesc)node.value).token).myType.accessModifier.toString().toLowerCase()+" ";
             if(accessModifier.equals("default "))accessModifier="";
             String isStatic = ((MemberToken)((MethodDesc)node.value).token).myType.isStatic?"static ":"";
-            
+                        
             //get name
             String name = ((MemberToken)((MethodDesc)node.value).token).image;
             
@@ -130,6 +143,19 @@ public class CodeGenVisitor implements Exp1Visitor
             //default always has 1 variable (this)
             //how many variables are in local scope? increase for each variable
             int variables = 1+(((MethodDesc) node.value).token).myContext.table.size();
+            
+            Set<String> keys = ((MethodDesc) node.value).token.myContext.table.keySet();
+            Iterator iterSet = keys.iterator();
+            while (iterSet.hasNext()) {
+                String strKey = (String) iterSet.next();
+                String value = ((MethodDesc)node.value).token.myContext.table.get(strKey).image;
+                if(!currentLocalVariables.contains(value)){
+                    currentLocalVariables.add(value);                    
+                }
+            }
+            //for some reason, adds them in backwards
+            Collections.reverse(currentLocalVariables);
+            
             //exact stack value requires intense analysis, using fixed value of 32.
             int stackValue = 32;
             //return generated code
@@ -140,6 +166,7 @@ public class CodeGenVisitor implements Exp1Visitor
                     returnDefault+"\n"+
                     ".end method\n";
             insideMethod = false;
+            currentLocalVariables = new ArrayList<>();
             return rtrn;
         }else if(node.value instanceof BlockDesc){
             //ignore block statements, recursively check each inner statement            
@@ -186,7 +213,8 @@ public class CodeGenVisitor implements Exp1Visitor
                 returnType += "C";
             }else if (((VariableDeclToken)node.value).myType.type == Token.ReturnType.Integer) {
                 returnType += "I";
-            }else if (((VariableDeclToken)node.value).myType.type == Token.ReturnType.Object) {
+            }else if (((VariableDeclToken)node.value).myType.type == Token.ReturnType.Object ||
+                            ((VariableDeclToken)node.value).myType.type == Token.ReturnType.String) {
                 returnType += "L";
                 //built in object types
                 if (((VariableDeclToken)node.value).myType.objectType.equals("String")) {
@@ -207,12 +235,39 @@ public class CodeGenVisitor implements Exp1Visitor
             return "";
             }
             //not a field, is a local variable initialization;
-            return ";initiate variable token\n";
+            if(((SimpleNode)((SimpleNode)node).parent).children.length > 1 &&
+                    ((SimpleNode)((SimpleNode)((SimpleNode)node).parent).children[1]).value instanceof ExpressionDesc){
+                String ending;
+                if(currentLocalVariables.contains(((VariableDeclToken)node.value).image)){
+                    int varNum = -1;
+                    for(int i=0;i<currentLocalVariables.size();i++){
+                        if(currentLocalVariables.get(i).equals(((VariableDeclToken)node.value).image)){
+                            varNum = i;
+                            break;
+                        }
+                    }
+                    //used to have underscore "istore_"
+                    ending = "istore "+varNum+"\n";
+                }else{
+                    //not a local variable
+                    ending = "istore "+((VariableDeclToken)node.value).image+"\n";
+                }
+                skipNextExp=true;
+                return expressionHandler(((SimpleNode)((SimpleNode)((SimpleNode)node).parent).children[1]), "",1)+
+                        ending;
+            }
+            //no code needs to be executed for declaration of variables with no assignment
+            return "";
         } else if(node.value instanceof ExpressionDesc){
-            //if it's a method call
-            System.out.println("");
-            //return expressionHandler(node,"");
-            return ";push value of expression on stack\n";
+            if(!skipNextExp){
+                skipNextExp = false;
+                String s = expressionHandler((SimpleNode)node,"",1);
+                return s;
+            }else{
+                skipNextExp=false;
+                return "";
+            }
+            //return ";push value of expression on stack\n";
         } else if(node.value instanceof WhileDesc){            
             //must have children[0] the condition.
             //must also have children[1] statements executed while true
@@ -256,7 +311,12 @@ public class CodeGenVisitor implements Exp1Visitor
         }
         if(node.children != null){
             String addAtEnd = "";
-            for(int i=0;i<node.children.length;i++){
+            for(int i=0;i<node.children.length;i++){                
+                if(((SimpleNode)node.children[i]).visitedForCodeGen){
+                    return "";
+                }else{
+                    ((SimpleNode)node.children[i]).visitedForCodeGen = true;
+                }
                 if(((SimpleNode)node.children[i]).value instanceof Operator){
                     addAtEnd+=expressionHandler((SimpleNode)node.children[i],tabs,numTab);
                     continue;
@@ -267,16 +327,122 @@ public class CodeGenVisitor implements Exp1Visitor
         }
         //if a variable is mentioned that is not being declare (e.g. not "int x")
         if(node.value instanceof Access){
+            //work around for boolean literals
+            if(((Access)node.value).image.equals("true")){
+                return "iconst_1\n";
+            }else if(((Access)node.value).image.equals("false")){                
+                return "iconst_0\n";
+            }
+            //end work around for boolean literals            
+            
+            //if it's a method call
+            //search symbol table for method calls
+            
+            //check first if class
+            String key = "class"+((Access)node.value).token.image;
+            Token t = rootST.getToken(key);
+            Token tempMeth;
+            String argumentsCode;
+            if(t!=null){
+                //check for methods in that class
+                SimpleNode one = (SimpleNode)((SimpleNode)node.parent).parent;
+                SimpleNode two = (SimpleNode)((SimpleNode)one.children[1]).children[0];
+                String key1 = "method"+((Access)two.value).image+"()";
+                tempMeth = t.myContext.getToken(key1);
+                argumentsCode = recursiveCodeGen(two);
+            } else {
+                //might be a method call for this class                
+                String key2 = "method"+((Access)node.value).token.image+"()";
+                tempMeth = thisSymbolTable.getToken(key2);
+                SimpleNode one = (SimpleNode)((SimpleNode)node.parent).parent;
+                SimpleNode two = (SimpleNode)((SimpleNode)one.children[0]).children[0];
+                String key1 = "method"+((Access)two.value).image+"()";
+                argumentsCode = recursiveCodeGen(two);
+            }
+            if(tempMeth != null){
+                MethodToken method = (MethodToken)tempMeth;
+                //push given arguments onto a new stack
+                //note: arguments need to be reversed on stack
+                String name = method.image;
+
+                //get arguments and abbreviate
+                ArrayList<FormalArgVarDeclToken> args = method.formalArgs;
+                String argsAbbr = "";
+                for (int i = 0; i < args.size(); i++) {
+                    //add [ for each array dimension
+                    for (int j = 0; j < args.get(i).myType.arrDim; j++) {
+                        argsAbbr += "[";
+                    }
+                    if (args.get(i).myType.type == Token.ReturnType.Boolean) {
+                        argsAbbr += "Z";
+                    } else if (args.get(i).myType.type == Token.ReturnType.Character) {
+                        argsAbbr += "C";
+                    } else if (args.get(i).myType.type == Token.ReturnType.Integer) {
+                        argsAbbr += "I";
+                    } else if (args.get(i).myType.type == Token.ReturnType.Object ||
+                            args.get(i).myType.type == Token.ReturnType.String) {
+                        //L folloewd by object class name
+                        argsAbbr += "L";
+                        //built in object types
+                        if (args.get(i).myType.type == Token.ReturnType.String) {
+                            argsAbbr += "java/lang/String;";
+                        }
+                    } else if (args.get(i).myType.type == Token.ReturnType.Void) {
+                        argsAbbr += "V";
+                    }
+                }
+                String returnType = "";
+            //i = int, l = long, f = float, d = double, a = pointer to object
+                //add [ for each array dimension
+                for (int i = 0; i < method.myType.arrDim; i++) {
+                    returnType += "[";
+                }
+                if (method.myType.type == Token.ReturnType.Boolean) {
+                    returnType += "B";
+                } else if (method.myType.type == Token.ReturnType.Character) {
+                    returnType += "C";
+                } else if (method.myType.type == Token.ReturnType.Integer) {
+                    returnType += "I";
+                } else if (method.myType.type == Token.ReturnType.Object) {
+                    returnType += "L";
+                    //built in object types
+                    if (method.myType.objectType.equals("String")) {
+                        returnType += "java/lang/String;";
+                    }
+                } else if (method.myType.type == Token.ReturnType.Void) {
+                    returnType += "V";
+                }
+
+                String methodFull = name + "("
+                        + argsAbbr + ")" + returnType; 
+                String plusClass = t==null? thisSymbolTable.tableOf.image+"/"+methodFull:t.image + "/" + methodFull;
+                
+                //is the method static?
+                if(method.myType.isStatic){
+                    return argumentsCode + "invokestatic "+plusClass+"\n";
+                }else{
+                    return argumentsCode + "invokevirtual "+plusClass+"\n";
+                }
+            }else{
             //a variable
-            return returnStr+"load "+((Access)node.value).image+"\n";
+            //assume integer
+            System.out.println("");
+            if(currentLocalVariables.contains(((Access)node.value).image)){
+                int variable = currentLocalVariables.indexOf(((Access)node.value).image);
+                return returnStr+"iload "+variable+"\n";
+            }else{
+                return returnStr+"iload "+((Access)node.value).image+"\n";
+            }
+            }
         }else if(node.value instanceof Literal){
             //a literal
-            if(((Literal)node.value).type.type == Token.ReturnType.Integer){
+            if(((Literal)node.value).type.type == Token.ReturnType.Integer ||
+                    ((Literal)node.value).type.type == Token.ReturnType.String){
                 //if it's an int
                 //push onto stack
                 return returnStr+"ldc "+((Literal)node.value).image+"\n";
             }else{
-                return returnStr+"";
+                return returnStr;
             }
         }else if(node.value instanceof Operator){
             //first do children            
@@ -292,32 +458,130 @@ public class CodeGenVisitor implements Exp1Visitor
             }else if(((Operator)node.value).type == OperatorType.Slash){
                 //assumed integer
                 return returnStr+"idiv\n";
-            }/*else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }else if(((Operator)node.value).type == OperatorType.Plus){
-                
-            }*/else{
+            }else if(((Operator)node.value).type == OperatorType.GreaterThan){
+                //assumed integer                
+                String ifNotGreater = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "if_cmpge " + ifNotGreater + "\n"+
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNotGreater+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";
+            }else if(((Operator)node.value).type == OperatorType.EqualsEquals){
+                //assumed integer                
+                String ifNotE = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "if_cmpne " + ifNotE + "\n"+
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNotE+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";                    
+            }else if(((Operator)node.value).type == OperatorType.GreaterThanEqual){
+                //assumed integer                
+                String ifNotGreaterE = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "if_cmpgt " + ifNotGreaterE + "\n"+
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNotGreaterE+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";                
+            }else if(((Operator)node.value).type == OperatorType.LessThan){
+                //assumed integer                
+                String ifNotLess = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "if_cmple " + ifNotLess + "\n"+
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNotLess+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";                           
+            }else if(((Operator)node.value).type == OperatorType.LessThanEqual){
+                //assumed integer                
+                String ifNotLessE = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "if_cmplt " + ifNotLessE + "\n"+
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNotLessE+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";                        
+            }else if(((Operator)node.value).type == OperatorType.NotEqual){
+                //assumed integer                
+                String ifNotNotE = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "if_cmpeq " + ifNotNotE + "\n"+
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNotNotE+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";                 
+            }else if(((Operator)node.value).type == OperatorType.AndAnd){     
+                String ifNot = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "ifeq " + ifNot + "\n"+
+                        "ifeq " + ifNot + "\n" +
+                        "iconst_1\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifNot+":\n"+
+                        "iconst_0\n"+
+                        exitLabel+":\n";                   
+            }else if(((Operator)node.value).type == OperatorType.Modulo){
+                //assumed integer
+                return returnStr+"irem\n";                
+            }else if(((Operator)node.value).type == OperatorType.DoubleVerticalBar){  
+                String ifTrue = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "ifne " + ifTrue + "\n"+
+                        "ifne " + ifTrue + "\n" +
+                        "iconst_0\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifTrue+":\n"+
+                        "iconst_1\n"+
+                        exitLabel+":\n";                  
+            }else if(((Operator)node.value).type == OperatorType.Not){
+                //assumed integer                
+                String ifFalse = "label_"+labelCount++;
+                String exitLabel = "label_"+labelCount++;
+                return "ifeq " + ifFalse + "\n"+
+                        "iconst_0\n"+
+                        "goto "+exitLabel+"\n"+
+                        ifFalse+":\n"+
+                        "iconst_1\n"+
+                        exitLabel+":\n";
+            }else if(((Operator)node.value).type == OperatorType.Equals){
+                //whatevers on the left is assigned to value on right
+                //right is in top spot on stack
+                SimpleNode one = (SimpleNode)((SimpleNode)((SimpleNode)node.parent).parent).children[0];
+                SimpleNode two = ((SimpleNode)((SimpleNode)one.children[0]).children[0]);
+                SimpleNode three = ((SimpleNode)((SimpleNode)two.children[0]).children[0]);
+                SimpleNode four = ((SimpleNode)((SimpleNode)three.children[0]).children[0]);
+                SimpleNode five = (SimpleNode)((SimpleNode)((SimpleNode)(SimpleNode)four.children[0]).children[0]).children[0];
+                String varToStore = ((Access)five.value).image;
+                //is varToStore a local variable? if so, use it as local
+                if(currentLocalVariables.contains(varToStore)){
+                    int varNum = -1;
+                    forLoop:
+                    for(int i=0;i<currentLocalVariables.size();i++){
+                        if(currentLocalVariables.get(i).equals(varToStore)){
+                            varNum = i;
+                            break forLoop;
+                        }
+                    }
+                    //used to have underscore "istore_"
+                    return "istore "+varNum+"\n";
+                }else{
+                    //not a local variable
+                    return "istore "+varToStore+"\n";
+                }
+            }else{
                 return returnStr+"";
             }
         }
         return returnStr+"";
-        //if contains binaryop 7, 6, 5, 4, or 3. it is a boolean expression
-        //otherwise it returns a value
-    }    
+    }
     @Override
     public String toString(){
         return resultFile;
