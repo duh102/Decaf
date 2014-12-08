@@ -1,17 +1,12 @@
 package javaccproject.visitors;
 
-import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javaccproject.Exp1Visitor;
-import javaccproject.ParseException;
-import javaccproject.SimpleNode;
-import javaccproject.SymbolTable;
-import javaccproject.leftToRightScope;
-import javaccproject.codegen.Access;
-import javaccproject.codegen.ClassDesc;
+import javaccproject.codegen.*;
 import javaccproject.tokens.*;
+import javaccproject.*;
 
 public class CheckSTVisitor implements Exp1Visitor
 {    
@@ -40,24 +35,30 @@ public class CheckSTVisitor implements Exp1Visitor
                 return null;
             }
             String testTokenKey = ((Token)((Access)node.jjtGetValue()).token).symbolTableKey();
-            if((ltrScope == null) || (((Token)((Access)node.jjtGetValue()).token).symbolTableKey() == null)){                
+            if((ltrScope == null) || (((Token)((Access)node.jjtGetValue()).token).symbolTableKey() == null)){                 
                 try {
                     throw new ParseException(String.format(
                             "Error at %s: \"%s\" used before declaration", ((Token)((Access)node.jjtGetValue()).token).parseExcept(), ((MemberToken)node.jjtGetValue()).image()));
                 } catch (ParseException ex) {
                     Logger.getLogger(CheckSTVisitor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            //if symbol table doesn't contian value, check recursively all parents
+            //if symbol table doesn't contain value, check recursively all parents
             }else if(!(((leftToRightScope) ltrScope).currentlyScannedThisScope.contains(((Token)((Access)node.jjtGetValue()).token).symbolTableKey()))) {
                 if (((leftToRightScope) ltrScope).equivalent.tableOf != null && ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn != null) {
                     if (!checkRecursive((((Token)((Access)node.jjtGetValue()).token)).symbolTableKey(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
-                        //error
-                        try {
-                            throw new ParseException(String.format(
-                                    "Error at %s: \"%s\" used before declaration", (((Token)((Access)node.jjtGetValue()).token)).parseExcept(), (((Token)((Access)node.jjtGetValue()).token)).image()));
-                        } catch (ParseException e) {
-                            // Catching Throwable is ugly but JavaCC throws Error objects!
-                            System.err.println("Syntax check failed: " + e.getMessage());
+                        //check as class too
+                        if(!checkRecursive("class" + (((Token) ((Access) node.jjtGetValue()).token)).image(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
+                            //lastly check all classes for methods
+                            if(!checkClasses("method" + (((Token) ((Access) node.jjtGetValue()).token)).image()+"()", ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
+                            //error
+                                try {
+                                    throw new ParseException(String.format(
+                                            "Error at %s: \"%s\" used before declaration", (((Token) ((Access) node.jjtGetValue()).token)).parseExcept(), (((Token) ((Access) node.jjtGetValue()).token)).image()));
+                                } catch (ParseException e) {
+                                    // Catching Throwable is ugly but JavaCC throws Error objects!
+                                    System.err.println("Syntax check failed: " + e.getMessage());
+                                }
+                            }
                         }
                     } else {
                         //is okay
@@ -77,42 +78,6 @@ public class CheckSTVisitor implements Exp1Visitor
                 //correct test
                 System.out.println((((Token)((Access)node.jjtGetValue()).token)).image() + " is correct in scope");
             }
-            /*String testTokenKey = ((MemberToken)node.jjtGetValue()).symbolTableKey();
-            if((ltrScope == null) || (((MemberToken)node.jjtGetValue()).symbolTableKey() == null)){                
-                try {
-                    throw new ParseException(String.format(
-                            "Error at %s: \"%s\" used before declaration", ((MemberToken)node.jjtGetValue()).parseExcept(), ((MemberToken)node.jjtGetValue()).image()));
-                } catch (ParseException ex) {
-                    Logger.getLogger(CheckSTVisitor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            //if symbol table doesn't contian value, check recursively all parents
-            }else if(!(((leftToRightScope) ltrScope).currentlyScannedThisScope.contains(((MemberToken) node.jjtGetValue()).symbolTableKey()))) {
-                if (((leftToRightScope) ltrScope).equivalent.tableOf != null && ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn != null) {
-                    if (!checkRecursive(((MemberToken) node.jjtGetValue()).symbolTableKey(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
-                        //error
-                        try {
-                            throw new ParseException(String.format(
-                                    "Error at %s: \"%s\" used before declaration", ((MemberToken) node.jjtGetValue()).parseExcept(), ((MemberToken) node.jjtGetValue()).image()));
-                        } catch (ParseException ex) {
-                            Logger.getLogger(CheckSTVisitor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                        //is okay
-                        System.out.println(((MemberToken) node.jjtGetValue()).image() + " is correct in scope");
-                    }
-                } else {
-                    //error no upper scope                    
-                    try {
-                        throw new ParseException(String.format(
-                                "Error at %s: \"%s\" used before declaration", ((MemberToken) node.jjtGetValue()).parseExcept(), ((MemberToken) node.jjtGetValue()).image()));
-                    } catch (ParseException ex) {
-                        Logger.getLogger(CheckSTVisitor.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }else{
-                //correct test
-                System.out.println(((MemberToken)node.jjtGetValue()).image() + " is correct in scope");
-            }*/
         }
         return null;
     }
@@ -127,4 +92,25 @@ public class CheckSTVisitor implements Exp1Visitor
             }
         }
     }
+    public boolean checkClasses(String method, SymbolTable symbolTable){
+        //get root table
+        SymbolTable root;
+        if(symbolTable.tableOf == null || symbolTable.tableOf.containedIn == null){
+            return false;
+        }else{
+            root = symbolTable.tableOf.containedIn;
+        }
+        Set<String> keys = root.table.keySet();
+        Iterator<String> iter = keys.iterator();
+        while(iter.hasNext()){
+            //check each class
+            String strKey = (String) iter.next();
+            ClassToken classToken = (ClassToken) root.getToken(strKey);
+            SymbolTable classTable = classToken.myContext;
+            if(classTable.getToken(method) != null){
+                return true;
+            }
+        }
+        return false;
+    }            
 }

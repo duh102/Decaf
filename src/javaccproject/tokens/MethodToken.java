@@ -25,11 +25,11 @@ public class MethodToken extends MemberToken
     }
     
     public String symbolTableKey() {
-        return String.format("method%s()", image);
+        return String.format("method%s(%s)", image, args());
     }
     
     public static String symbolTableKey(String key, String args){
-        return String.format("method%s()", key);
+        return String.format("method%s(%s)", key, args);
     }
     
     public String args()

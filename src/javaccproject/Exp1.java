@@ -1,10 +1,10 @@
 package javaccproject;
 
-import javaccproject.codegen.ExpressionDesc;
-
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.List;
 
@@ -16,6 +16,7 @@ import javaccproject.codegen.BreakDesc;
 import javaccproject.codegen.ClassDesc;
 import javaccproject.codegen.ContinueDesc;
 import javaccproject.codegen.ElseDesc;
+import javaccproject.codegen.ExpressionDesc;
 import javaccproject.codegen.IfDesc;
 import javaccproject.codegen.Literal;
 import javaccproject.codegen.MethodDesc;
@@ -77,7 +78,17 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             result.depthFirstCheck();
             System.out.printf("Parsing successful, results:\n%s", result);
             System.out.println("\n\n--BEGIN CODE GENERATION--\n\n");
-            System.out.println(result.generateCode());
+            //create new .j file
+            if(result.topNode != null && ((SimpleNode)result.topNode).children != null &&
+                    ((SimpleNode)result.topNode).children.length > 0 &&
+                    ((SimpleNode)((SimpleNode)result.topNode).children[0]).value != null &&
+                    ((SimpleNode)((SimpleNode)result.topNode).children[0]).value instanceof ClassDesc &&
+                    ((ClassDesc)((SimpleNode)((SimpleNode)result.topNode).children[0]).value).token !=null)
+            {
+                String filename = ((ClassDesc)((SimpleNode)((SimpleNode)result.topNode).children[0]).value).token.image;
+                createFile(result.generateCode(),  filename);
+                System.out.printf("Wrote file to %s.j\n", filename);
+            }
         } catch (ParseException e) {
             // Catching Throwable is ugly but JavaCC throws Error objects!
             System.err.println("Syntax check failed: " + e.getMessage());
@@ -99,6 +110,14 @@ public class Exp1/* @bgen(jjtree) */implements Exp1TreeConstants, Exp1Constants
             // Catching Throwable is ugly but JavaCC throws Error objects!
             throw e;
         }
+    }
+    
+    public static void createFile(String code, String name) throws IOException{
+        File f = new File(name + ".j");
+        f.createNewFile();
+        PrintWriter pw = new PrintWriter(f);
+        pw.print(code);
+        pw.close();
     }
     
      private static void setupDefaults(SymbolTable table)
