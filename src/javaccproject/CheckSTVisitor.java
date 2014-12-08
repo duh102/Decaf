@@ -47,17 +47,21 @@ public class CheckSTVisitor implements Exp1Visitor
             }else if(!(((leftToRightScope) ltrScope).currentlyScannedThisScope.contains(((Token)((Access)node.jjtGetValue()).token).symbolTableKey()))) {
                 if (((leftToRightScope) ltrScope).equivalent.tableOf != null && ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn != null) {
                     if (!checkRecursive((((Token)((Access)node.jjtGetValue()).token)).symbolTableKey(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
-                        //check as class too
-                        if(!checkRecursive("class" + (((Token) ((Access) node.jjtGetValue()).token)).image(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
-                            //lastly check all classes for methods
-                            if(!checkClasses("method" + (((Token) ((Access) node.jjtGetValue()).token)).image()+"()", ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
-                            //error
-                                try {
-                                    throw new ParseException(String.format(
-                                            "Error at %s: \"%s\" used before declaration", (((Token) ((Access) node.jjtGetValue()).token)).parseExcept(), (((Token) ((Access) node.jjtGetValue()).token)).image()));
-                                } catch (ParseException e) {
-                                    // Catching Throwable is ugly but JavaCC throws Error objects!
-                                    System.err.println("Syntax check failed: " + e.getMessage());
+                        //make sure not a boolean literal
+                        if (!(((Token) ((Access) node.jjtGetValue()).token)).image().equals("true")
+                                && !(((Token) ((Access) node.jjtGetValue()).token)).image().equals("false")) {
+                            //check as class too
+                            if (!checkRecursive("class" + (((Token) ((Access) node.jjtGetValue()).token)).image(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
+                                //lastly check all classes for methods
+                                if (!checkClasses("method" + (((Token) ((Access) node.jjtGetValue()).token)).image() + "()", ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
+                                    //error
+                                    try {
+                                        throw new ParseException(String.format(
+                                                "Error at %s: \"%s\" used before declaration", (((Token) ((Access) node.jjtGetValue()).token)).parseExcept(), (((Token) ((Access) node.jjtGetValue()).token)).image()));
+                                    } catch (ParseException e) {
+                                        // Catching Throwable is ugly but JavaCC throws Error objects!
+                                        System.err.println("Syntax check failed: " + e.getMessage());
+                                    }
                                 }
                             }
                         }
