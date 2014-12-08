@@ -1,6 +1,8 @@
 package javaccproject;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javaccproject.codegen.Access;
@@ -34,7 +36,7 @@ public class CheckSTVisitor implements Exp1Visitor
                 return null;
             }
             String testTokenKey = ((Token)((Access)node.jjtGetValue()).token).symbolTableKey();
-            if((ltrScope == null) || (((Token)((Access)node.jjtGetValue()).token).symbolTableKey() == null)){                
+            if((ltrScope == null) || (((Token)((Access)node.jjtGetValue()).token).symbolTableKey() == null)){                 
                 try {
                     throw new ParseException(String.format(
                             "Error at %s: \"%s\" used before declaration", ((Token)((Access)node.jjtGetValue()).token).parseExcept(), ((MemberToken)node.jjtGetValue()).image()));
@@ -45,13 +47,19 @@ public class CheckSTVisitor implements Exp1Visitor
             }else if(!(((leftToRightScope) ltrScope).currentlyScannedThisScope.contains(((Token)((Access)node.jjtGetValue()).token).symbolTableKey()))) {
                 if (((leftToRightScope) ltrScope).equivalent.tableOf != null && ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn != null) {
                     if (!checkRecursive((((Token)((Access)node.jjtGetValue()).token)).symbolTableKey(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
-                        //error
-                        try {
-                            throw new ParseException(String.format(
-                                    "Error at %s: \"%s\" used before declaration", (((Token)((Access)node.jjtGetValue()).token)).parseExcept(), (((Token)((Access)node.jjtGetValue()).token)).image()));
-                        } catch (ParseException e) {
-                            // Catching Throwable is ugly but JavaCC throws Error objects!
-                            System.err.println("Syntax check failed: " + e.getMessage());
+                        //check as class too
+                        if(!checkRecursive("class" + (((Token) ((Access) node.jjtGetValue()).token)).image(), ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
+                            //lastly check all classes for methods
+                            if(!checkClasses("method" + (((Token) ((Access) node.jjtGetValue()).token)).image()+"()", ((leftToRightScope) ltrScope).equivalent.tableOf.containedIn)) {
+                            //error
+                                try {
+                                    throw new ParseException(String.format(
+                                            "Error at %s: \"%s\" used before declaration", (((Token) ((Access) node.jjtGetValue()).token)).parseExcept(), (((Token) ((Access) node.jjtGetValue()).token)).image()));
+                                } catch (ParseException e) {
+                                    // Catching Throwable is ugly but JavaCC throws Error objects!
+                                    System.err.println("Syntax check failed: " + e.getMessage());
+                                }
+                            }
                         }
                     } else {
                         //is okay
@@ -121,4 +129,25 @@ public class CheckSTVisitor implements Exp1Visitor
             }
         }
     }
+    public boolean checkClasses(String method, SymbolTable symbolTable){
+        //get root table
+        SymbolTable root;
+        if(symbolTable.tableOf == null || symbolTable.tableOf.containedIn == null){
+            return false;
+        }else{
+            root = symbolTable.tableOf.containedIn;
+        }
+        Set<String> keys = root.table.keySet();
+        Iterator iter = keys.iterator();
+        while(iter.hasNext()){
+            //check each class
+            String strKey = (String) iter.next();
+            ClassToken classToken = (ClassToken) root.getToken(strKey);
+            SymbolTable classTable = classToken.myContext;
+            if(classTable.getToken(method) != null){
+                return true;
+            }
+        }
+        return false;
+    }            
 }
